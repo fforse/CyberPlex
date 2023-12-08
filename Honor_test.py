@@ -11,6 +11,7 @@ from maltoolbox.model import model
 from maltoolbox.attackgraph import attackgraph
 from maltoolbox.attackgraph.analyzers import apriori
 from maltoolbox.ingestors import neo4j
+import cost_from_ttc
 
 
 
@@ -281,9 +282,10 @@ attkgraph.save_to_file("attackgraph_file.json")
 for node in attkgraph.nodes:
     if node.ttc != None:
         ttc = node.ttc
-        
-        print(ttc)
-    #print(theNode)
+        cost = cost_from_ttc.cost_from_ttc(ttc)
+        roundedCost = int(round(cost, 0))
+        #print(roundedCost) 
+    print(node.to_dict()['id'])
 
 """ Save in a temp json file """
 honorModel.save_to_file("tempModel.json")
