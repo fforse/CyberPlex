@@ -2,6 +2,7 @@ import sys
 
 import logging
 import json
+import random
 
 import maltoolbox
 import maltoolbox.cl_parser
@@ -9,9 +10,12 @@ from maltoolbox.language import classes_factory
 from maltoolbox.language import specification
 from maltoolbox.model import model
 from maltoolbox.attackgraph import attackgraph
+from maltoolbox.attackgraph import query
 from maltoolbox.attackgraph.analyzers import apriori
 from maltoolbox.ingestors import neo4j
 import cost_from_ttc
+import attack_simulation
+from py2neo import Graph
 
 
 
@@ -24,13 +28,22 @@ remove_smart_meter_company = True
 """ Choose the modifed file or the Honor-model"""
 use_modified_model = True
 
-if use_modified_model == True:
+if use_modified_model:
     json_file = "tempModel.json"
 else:
     json_file = "honor_test.json"
 
 """Add attacker"""
-add_attacker = False
+add_attacker = True
+
+""" Turn off defennces"""
+no_defences = True
+
+""" Run Attack"""
+run_attack = False
+
+""" Add assets"""
+add_assets = False
 
 """ Load the language specification, coreLang mar file """
 langSpec = specification.load_language_specification_from_mar("mal_corelang_test.mar")
@@ -41,6 +54,7 @@ langSpec = specification.load_language_specification_from_mar("mal_corelang_test
 """ Generate python classes from specification """
 pythClasses = classes_factory.LanguageClassesFactory(langSpec)
 pythClasses.create_classes()
+#print(dir(pythClasses.ns.Network)) # print attribute from the generated classes
 
 """Create a model object """
 honorModel = model.Model("honormodel", langSpec, pythClasses)
@@ -54,7 +68,6 @@ def get_number_of_associations(asset):
     for assoc in asset.associations:
         numberOfAssocs = numberOfAssocs + 1 
     return numberOfAssocs
-
 
 """ Remove associated assets"""
     
@@ -243,9 +256,84 @@ if remove_smart_meter_company == True:
     remove_asset_by_id(-2777251403626038) # connection
 
 
+""" Add Plexigrid assets"""
+add_association = False
+if add_assets:
+    # FTP server
+    plexigridFtp = pythClasses.ns.Application()
+    plexigridFtp.metaconcept = "Application"
+    plexigridFtp.name = "Plexigrid FTP server"
+    plexigridFtp.supplyChainAuditing = 1
+    # Software vulnerability
+    vulnerabilityAsset = pythClasses.ns.SoftwareVulnerability()
+    vulnerabilityAsset.metaconcept = "SoftwareVulnerability"
+    vulnerabilityAsset.name = "SoftwareVulnerability Plexi"
+    # Network
+    plexiNetwork = pythClasses.ns.Network()
+    plexiNetwork.metaconcept = "Network"
+    plexiNetwork.name = "Plexigrid Core Network"
+    # Connection Node
+    plexiConn = pythClasses.ns.ConnectionRule()
+    plexiConn.metaconcept = "ConnectionRule"
+    plexiConn.name = "ConnectionRule"
+    # Routing
+    plexiRouting = pythClasses.ns.RoutingFirewall()
+    plexiRouting.metaconcept = "RoutingFirewall"
+    plexiRouting.name = "RoutingFirewall"
+    plexiRouting.supplyChainAuditing = 1
+    # Vulnerability related to Router
+    vulnerabilityAssetRouting = pythClasses.ns.SoftwareVulnerability()
+    vulnerabilityAssetRouting.metaconcept = "SoftwareVulnerability"
+    vulnerabilityAssetRouting.name = "SoftwareVulnerability"
+    # Add to model
+    honorModel.add_asset(plexiNetwork)
+    honorModel.add_asset(plexigridFtp)
+    honorModel.add_asset(vulnerabilityAsset)
+    honorModel.add_asset(plexiConn)
+    honorModel.add_asset(plexiRouting)
+    honorModel.add_asset(vulnerabilityAssetRouting)
+if add_association:
+    # Add software vulnerability to plexigrid FTP 
+    associationBetweenAssets = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
+    associationBetweenAssets.application = [plexigridFtp]
+    associationBetweenAssets.vulnerabilities = [vulnerabilityAsset]
+    # Add connection and firewall
+    # FirewallConnectionRule (routingFirewalls, connectionRules)
+    assocFirewallandConn = pythClasses.ns.FirewallConnectionRule()
+    assocFirewallandConn.routingFirewalls = [plexiRouting]
+    assocFirewallandConn.connectionRules = [plexiConn]
+    # Add vulnerabillity to router
+    assocVulnandFirewall = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
+    assocVulnandFirewall.application = [plexiRouting]
+    assocVulnandFirewall.vulnerabilities = [vulnerabilityAssetRouting]
+    # Add connection to network
+    # NetworkConnections (networks, netConnection)
+    assocConnandNetwork = pythClasses.ns.NetworkConnection()
+    assocConnandNetwork.networks = [plexiNetwork]
+    assocConnandNetwork.netConnections = [plexiConn]
+    # Connect FTP with network
+    assocAppliandNetwork = pythClasses.ns.NetworkExposure()
+    assocAppliandNetwork.networks = [plexiNetwork]
+    assocAppliandNetwork.applications = [plexigridFtp]
 
+    honorModel.add_association(associationBetweenAssets)
+    honorModel.add_association(assocFirewallandConn)
+    honorModel.add_association(assocVulnandFirewall)
+    honorModel.add_association(assocConnandNetwork)
+    honorModel.add_association(assocAppliandNetwork)
+    """
+    # Connect to HONOR-model
+    """
+addToHonorModel = True
+if addToHonorModel:
+    associationToHonorModel = pythClasses.ns.NetworkConnection()
+    internet = honorModel.get_asset_by_id(8103222226739678984)
+    plexigridConn = honorModel.get_asset_by_id(8868704904159774858)
+    associationToHonorModel.networks = [internet]
+    associationToHonorModel.netConnections = [plexigridConn]
+    honorModel.add_association(associationToHonorModel)
 
-
+###################TEST######################################
 """ Test which asset ids that are conneected to an asset"""
 """
 testasset = honorModel.get_asset_by_id(8482151560692704)
@@ -258,42 +346,102 @@ for assoc in testasset.associations:
     connectedAsset = getattr(assoc, connectedAssocName)
     print(connectedAsset[0].id)
 """
-
+################################################################
 
 """ Add attacker"""
 if add_attacker:
+    honorModel.attackers.clear()
     attacker = model.Attacker()
-    attacker.id = "-4557996462960095"
     attacker.name = "Attacker"
-    entry_point_asset = honorModel.get_asset_by_id(1007211369537407)
-    list_of_tuples = [(entry_point_asset, ['fullAccess'])]
+    entry_point_asset = honorModel.get_asset_by_id(-8870229874954749)
+    list_of_tuples = [(entry_point_asset, ["attemptFullAccessFromSupplyChainCompromise"])] # can add more compromised attack steps to this asset
     attacker.entry_points = list_of_tuples
-
     honorModel.add_attacker(attacker)
 
 """ Generate attackgraps from model """
 attkgraph = attackgraph.AttackGraph()
 attkgraph.generate_graph(langSpec, honorModel)
+""" Add another asset the attacker has compromised"""
+#Second_asset = honorModel.get_asset_by_id(5738706579997441)
+#honorModel.attackers[0].entry_points.append((Second_asset, ["attemptFullAccessFromSupplyChainCompromise"]))
 attkgraph.attach_attackers(honorModel)
-attkgraph.save_to_file("attackgraph_file.json")
 
 
 """ Make every ttc label to a cost"""
-for node in attkgraph.nodes:
-    if node.ttc != None:
-        ttc = node.ttc
-        cost = cost_from_ttc.cost_from_ttc(ttc)
-        roundedCost = int(round(cost, 0))
-        #print(roundedCost) 
-    print(node.to_dict()['id'])
+def cost_function(attackgraph):
+    costDict = {}
+    output_file = "costs.json"
+    # To give all attack steps a cost
+    for node in attkgraph.nodes:
+        # If the ttc is defined
+        if node.ttc != None:
+            ttc = node.ttc
+            cost = cost_from_ttc.cost_from_ttc(ttc)
+            roundedCost = int(round(cost, 0)+2)
+            #print(roundedCost)
+            costDict[node.id] = roundedCost
+        # If the ttc is null
+        else:
+            node.ttc = random.randint(0,10)
+            costDict[node.id] = node.ttc
+    with open(output_file, 'w') as file:
+        json.dump(costDict, file)
+        #print(node.to_dict()['id'])
+
+""" Turn of defenses for testing"""
+def turn_off_defences(attackgraph):
+    for node in attackgraph.nodes:
+        if node.type == 'defense':
+            node.is_necessary = False
+
+if no_defences:
+    turn_off_defences(attkgraph)
+
+if run_attack:
+    attkgraph.save_to_file("attackgraph_file.json")
+    cost_function(attkgraph)
+
+
+    test_dijkstra = True
+    test_random_path = False
+
+    """ Setting up an attack simulation"""
+    attacker = attkgraph.attackers[0]
+    attacker_entry_point = attacker.node.id
+    attackSimulation = attack_simulation.AttackSimulation(attkgraph, attacker)
+    attackSimulation.start_node = attacker_entry_point
+    attackSimulation.set_target_node("Application:-8870229874954749:modify")
+    attackSimulation.set_attacker_cost_budget(10000)
+
+    """ If Dijkstra"""
+    if test_dijkstra:
+        costOfAttacks = attackSimulation.dijkstra()
+        print(costOfAttacks)
+        print(attackSimulation.visited)
+
+    """ If random path"""
+    if test_random_path:
+        costOfAttacks = attackSimulation.random_path()
+        print(costOfAttacks)
+        print(attackSimulation.visited)
+
+    """ Upload hacking chain to neo4j"""
+    #neo4j_graph_connection = Graph(uri="neo4j://localhost:7687", user="Fredrik", password="fred4551", name="attackgraphs")
+    #attackSimulation.upload_graph_to_neo4j(neo4j_graph_connection, add_horizon=False)
+    
+    #attack_simulation.start_node = honorModel.attacker
+    #print(honorModel.attackers[0])
+
+
+
 
 """ Save in a temp json file """
 honorModel.save_to_file("tempModel.json")
 
 """ Create neo4j model instance """
 
-#neo4j.ingest_model(honorModel, "neo4j://localhost:7687", "Fredrik",
-#"fred4551", "ingestmodel", delete=True)
+neo4j.ingest_model(honorModel, "neo4j://localhost:7687", "Fredrik",
+"fred4551", "ingestmodel", delete=True)
 
 """ Create neo4j attackgraph instance """
 
