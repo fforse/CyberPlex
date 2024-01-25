@@ -36,7 +36,7 @@ import matplotlib.pyplot as plt
 modifyModel = False
 
 """ Change depedning on test case"""
-removeSmartMeterCompany = True
+removeSmartMeterCompany = False
 
 """ Choose the modifed file or the Honor-model"""
 use_modified_model = True
@@ -53,13 +53,7 @@ addAttacker = True
 no_defences = True
 
 """ Run Attack"""
-run_attack = True
-
-""" Add assets"""
-add_assets = False
-
-""" Add plexigrid associations"""
-add_association = False
+run_attack = False
 
 """ Load the language specification, coreLang mar file """
 langSpec = specification.load_language_specification_from_json("coreLang.json")
@@ -70,7 +64,7 @@ langSpec = specification.load_language_specification_from_json("coreLang.json")
 """ Generate python classes from specification """
 pythClasses = classes_factory.LanguageClassesFactory(langSpec)
 pythClasses.create_classes()
-#print(dir(pythClasses.ns.Network)) # print attribute from the generated classes
+#print(dir(pythClasses.ns.FirewallConnectionRule())) # print attribute from the generated classes
 
 """Create a model object """
 honorModel = model.Model("honormodel", langSpec, pythClasses)
@@ -82,7 +76,9 @@ honorModel.load_from_file(json_file)
 modfication_of_model.modify_model(modifyModel, removeSmartMeterCompany, honorModel)
 
 """ Add Plexigrid assets and associations"""
-add_plexigrid.add_plexigrid_assets(pythClasses, honorModel)
+assets_from_plexigrid = True
+if assets_from_plexigrid:
+    add_plexigrid.add_plexigrid_assets(pythClasses, honorModel)
 
 ###################TEST######################################
 """ Test which asset ids that are conneected to an asset"""
@@ -101,6 +97,14 @@ for assoc in testasset.associations:
 
 """ Add attacker"""
 attkgraph = attack_functions.add_attacker(addAttacker, honorModel, langSpec)
+
+####################### Test to add cloud #####################
+# Cloud
+#plexiCloud = pythClasses.ns.Cloud()
+#plexiCloud.metaconcept = "Cloud"
+#plexiCloud.name = "Cloud"
+#honorModel.add_asset(plexiCloud)
+############################################################
 
 """ Save in a temp json file """
 honorModel.save_to_file("tempModel.json")
@@ -131,8 +135,13 @@ if run_attack:
 upload_to_neo4j = False
 if upload_to_neo4j:
     attack_functions.create_neo4j_graph(attackSimulation)
+
+show_neo4j_model = False
+if show_neo4j_model:
+    attack_functions.visualize_the_model_neo4j(honorModel)
+
     
-visualize = True
+visualize = False
 if visualize:
     attack_functions.visualize_with_networkX(attackSimulation)
 

@@ -81,9 +81,8 @@ def create_neo4j_graph(attackSimulation):
 
 
     """ Create neo4j model instance """
-
-    #neo4j.ingest_model(honorModel, "neo4j://localhost:7687", "Fredrik",
-    #"fred4551", "ingestmodel", delete=True)
+def visualize_the_model_neo4j(honorModel):
+    neo4j.ingest_model(honorModel, "neo4j://localhost:7687", "Fredrik","fred4551", "ingestmodel", delete=True)
 
 
 ################################## Visualisation of attackgraph with networkX###############################################
