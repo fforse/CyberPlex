@@ -39,18 +39,43 @@ modifyModel = False
 removeSmartMeterCompany = False
 
 """ Choose the modifed file or the Honor-model"""
-use_modified_model = True
+use_modified_model = False
+
+""" Simplified DSO"""
+SimplifiedDSO = False
+
+""" Which case"""
+case1 = True
+case2 = False
+case3 = False
+case4 = False
+case5 = True
+case6 = False
 
 if use_modified_model:
     json_file = "tempModel.json"
-else:
+if modifyModel:
     json_file = "honor_test.json"
+if SimplifiedDSO:
+    json_file = ""
+if case1:
+    json_file = "./TestCases/case1.json"
+if case2:
+    json_file = "./TestCases/case2.json"
+if case3:
+    json_file = "./TestCases/case3.json"
+if case4:
+    json_file = "./TestCases/case4.json"
+if case5:
+    json_file = "./TestCases/case5.json"
+if case6:
+    json_file = "./TestCases/case6.json"
 
 """Add attacker"""
-addAttacker = True
+addAttacker = False
 
 """ Turn off defennces"""
-no_defences = True
+no_defences = False
 
 """ Run Attack"""
 run_attack = False
@@ -64,21 +89,26 @@ langSpec = specification.load_language_specification_from_json("coreLang.json")
 """ Generate python classes from specification """
 pythClasses = classes_factory.LanguageClassesFactory(langSpec)
 pythClasses.create_classes()
-#print(dir(pythClasses.ns.FirewallConnectionRule())) # print attribute from the generated classes
+#print(dir(pythClasses.ns.AppProtection())) # print attribute from the generated classes
 
 """Create a model object """
 honorModel = model.Model("honormodel", langSpec, pythClasses)
 
 """ Load model from json format. If first time running the program, use "honor_test.json" else use "tempModel.json" """
-honorModel.load_from_file(json_file)
-
-""" Modify model"""
-modfication_of_model.modify_model(modifyModel, removeSmartMeterCompany, honorModel)
+if json_file == "tempModel.json" or json_file == "honor_test.json":
+    honorModel.load_from_file(json_file)
+    modfication_of_model.modify_model(modifyModel, removeSmartMeterCompany, honorModel)
 
 """ Add Plexigrid assets and associations"""
 assets_from_plexigrid = True
 if assets_from_plexigrid:
-    add_plexigrid.add_plexigrid_assets(pythClasses, honorModel)
+    json_file = add_plexigrid.add_plexigrid_assets(pythClasses, honorModel)
+
+if SimplifiedDSO:
+    honorModel.load_from_file(json_file)
+
+if case1 or case2 or case3 or case4 or case5 or case6:
+    honorModel.load_from_file("./TestCases/case5.json")
 
 ###################TEST######################################
 """ Test which asset ids that are conneected to an asset"""
@@ -98,14 +128,6 @@ for assoc in testasset.associations:
 """ Add attacker"""
 attkgraph = attack_functions.add_attacker(addAttacker, honorModel, langSpec)
 
-####################### Test to add cloud #####################
-# Cloud
-#plexiCloud = pythClasses.ns.Cloud()
-#plexiCloud.metaconcept = "Cloud"
-#plexiCloud.name = "Cloud"
-#honorModel.add_asset(plexiCloud)
-############################################################
-
 """ Save in a temp json file """
 honorModel.save_to_file("tempModel.json")
 
@@ -115,9 +137,12 @@ def turn_off_defences(attackgraph):
     for node in attackgraph.nodes:
         if node.type == 'defense':
             node.is_necessary = False
+            node.is_viable = True
 
 if no_defences:
     turn_off_defences(attkgraph)
+
+
 """ Extract defenses"""
 extractDefenses = False
 if extractDefenses:
@@ -136,7 +161,7 @@ upload_to_neo4j = False
 if upload_to_neo4j:
     attack_functions.create_neo4j_graph(attackSimulation)
 
-show_neo4j_model = False
+show_neo4j_model = True
 if show_neo4j_model:
     attack_functions.visualize_the_model_neo4j(honorModel)
 
