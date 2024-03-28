@@ -20,9 +20,9 @@ addToHonorModel = False
 addDSO = True
 
 # Email->Email
-test_case1 = False
+test_case1 = True
 # Email->Onedrive
-test_case2 = True
+test_case2 = False
 #SFTP-> Email
 test_case3 = False
 #SFTP->Onedrive
@@ -36,6 +36,16 @@ def add_plexigrid_assets(pythClasses, honorModel):
     if add_assets:
 ################################################## Test 1 ########################################################################       
         if test_case1:
+            # Network (Cloud network)
+            cloudNetwork = pythClasses.ns.Network()
+            cloudNetwork.metaconcept = "Network"
+            cloudNetwork.name = "Cloud network"
+            # connection node between cloud and internet
+            CloudInternetConn = pythClasses.ns.ConnectionRule()
+            CloudInternetConn.metaconcept = "ConnectionRule"
+            CloudInternetConn.name = "ConnectionRule"
+            CloudInternetConn.restricted = 0.8 # ports on the computer that are blocked
+            CloudInternetConn.payloadInspection = 0.9 # Microsoft has IDPS or firewall that try to filter malicous payloads
             # Network (Plexigrid Development LAN)
             plexiDevNetwork = pythClasses.ns.Network()
             plexiDevNetwork.metaconcept = "Network"
@@ -52,18 +62,16 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexiDevConn = pythClasses.ns.ConnectionRule()
             plexiDevConn.metaconcept = "ConnectionRule"
             plexiDevConn.name = "ConnectionRule internet"
-            # connection between sales network and sales mail server
+            # connection between cloud network and sales(microsoft) mail server
             plexiMailSalesConn = pythClasses.ns.ConnectionRule()
             plexiMailSalesConn.metaconcept = "ConnectionRule"
             plexiMailSalesConn.name = "ConnectionRule"
-            # connection between Dev network and Dev mail server
-            plexiMailDevConn = pythClasses.ns.ConnectionRule()
-            plexiMailDevConn.metaconcept = "ConnectionRule"
-            plexiMailDevConn.name = "ConnectionRule"
             # connection between Dev network and Dev office
             plexigridDevOfficeConn = pythClasses.ns.ConnectionRule()
             plexigridDevOfficeConn.metaconcept = "ConnectionRule"
             plexigridDevOfficeConn.name = "ConnectionRule"
+            plexigridDevOfficeConn.restricted = 0.6 # ports on the computer that are blocked
+            plexigridDevOfficeConn.payloadInspection = 0.7 # Sophos try to filter malicous payloads
             # Add firewall between internet and dev
             plexiInternetDevFirewall = pythClasses.ns.RoutingFirewall()
             plexiInternetDevFirewall.metaconcept = "RoutingFirewall"
@@ -80,26 +88,48 @@ def add_plexigrid_assets(pythClasses, honorModel):
             vulnerabilityFirewallInternetSales = pythClasses.ns.SoftwareVulnerability()
             vulnerabilityFirewallInternetSales.metaconcept = "SoftwareVulnerability"
             vulnerabilityFirewallInternetSales.name = "SoftwareVulnerability Firewall"
-            # Add PM office
-            plexigridSalesOffice = pythClasses.ns.Application()
-            plexigridSalesOffice.metaconcept = "Application"
-            plexigridSalesOffice.name = "Sales Office station"
-            plexigridSalesOffice.supplyChainAuditing = 1
 
+            # Add software vulnerabilities to sales office
+            vulnerabilityOfficeSales = pythClasses.ns.SoftwareVulnerability()
+            vulnerabilityOfficeSales.metaconcept = "SoftwareVulnerability"
+            vulnerabilityOfficeSales.name = "SoftwareVulnerability Office"
+            vulnerabilityOfficeSales.highComplexityExploitRequired = 0.8 # difficult but not more than microsoft
+            vulnerabilityOfficeSales.userInteractionRequired = 1 # The user has to click something malicious
+            vulnerabilityOfficeSales.highPrivilegesRequired = 1 # Need to have admin role
+            vulnerabilityOfficeSales.localAccessRequired = 1 # Need network access to exploit
+            # Add software vulnerabilities to devs office
+            vulnerabilityOfficeDev = pythClasses.ns.SoftwareVulnerability()
+            vulnerabilityOfficeDev.metaconcept = "SoftwareVulnerability"
+            vulnerabilityOfficeDev.name = "SoftwareVulnerability Office"
+            vulnerabilityOfficeDev.highComplexityExploitRequired = 0.8 # difficult but not more than microsoft
+            vulnerabilityOfficeDev.userInteractionRequired = 1 # The user has to click something malicious
+            vulnerabilityOfficeDev.highPrivilegesRequired = 1 # Need to have admin role
+            vulnerabilityOfficeDev.localAccessRequired = 1 # Need network access to exploit
+            # User symbolyzing the real human 
+            plexigridRegularUser = pythClasses.ns.User()
+            plexigridRegularUser.metaconcept = "User"
+            plexigridRegularUser.name = "Dev User"
+            plexigridRegularUser.securityAwareness = 0.5
             # Add pm sophos security suite
             plexigridSalesIDPS = pythClasses.ns.IDPS()
             plexigridSalesIDPS.metaconcept = "IDPS"
             plexigridSalesIDPS.name = "Sophos"
             plexigridSalesIDPS.supplyChainAuditing = 1
-            # Add pm sophos security suite
+            plexigridSalesIDPS.effectiveness = 0.6
+            # Add dev sophos security suite
             plexigridDevIDPS = pythClasses.ns.IDPS()
             plexigridDevIDPS.metaconcept = "IDPS"
             plexigridDevIDPS.name = "Sophos"
             plexigridDevIDPS.supplyChainAuditing = 1
+            plexigridDevIDPS.effectiveness = 0.6
             # Add plexigrid database
             plexigriddatabase = pythClasses.ns.Application()
             plexigriddatabase.metaconcept = "Application"
             plexigriddatabase.name = "Plexigrid Database"
+            # Conn between database and cloud
+            plexidatabasecloudconn = pythClasses.ns.ConnectionRule()
+            plexidatabasecloudconn.metaconcept = "ConnectionRule"
+            plexidatabasecloudconn.name = "ConnectionRule"
             # Add plexigrid application
             plexigridApplication = pythClasses.ns.Application()
             plexigridApplication.metaconcept = "Application"
@@ -108,10 +138,6 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexiApplicationcloudconn = pythClasses.ns.ConnectionRule()
             plexiApplicationcloudconn.metaconcept = "ConnectionRule"
             plexiApplicationcloudconn.name = "ConnectionRule"
-            # Conn between database and cloud
-            plexidatabasecloudconn = pythClasses.ns.ConnectionRule()
-            plexidatabasecloudconn.metaconcept = "ConnectionRule"
-            plexidatabasecloudconn.name = "ConnectionRule"
             # Add hardware that holds web application and database
             plexigridAppDatabaseHardware = pythClasses.ns.Hardware()
             plexigridAppDatabaseHardware.metaconcept = "Hardware"
@@ -120,10 +146,17 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexigridAppDataBaseHardwarevuln = pythClasses.ns.HardwareVulnerability()
             plexigridAppDataBaseHardwarevuln.metaconcept = "HardwareVulnerability"
             plexigridAppDataBaseHardwarevuln.name = "HardwareVulnerability"
+            plexigridAppDataBaseHardwarevuln.confidentialityImpactLimitations = 0.95 # assume CIA triad is provided by the cloud provider
+            plexigridAppDataBaseHardwarevuln.availabilityImpactLimitations = 0.95 # assume CIA triad is provided by the cloud provider
+            plexigridAppDataBaseHardwarevuln.integrityImpactLimitations = 0.95 # assume CIA triad is provided by the cloud provider
+            plexigridAppDataBaseHardwarevuln.effortRequiredToExploit = 1
+            
             # Credentials for encryption to database
             SSHCreds = pythClasses.ns.Credentials()
             SSHCreds.metaconcept = "Credentials"
             SSHCreds.name = "Encryption keys"
+            SSHCreds.notGuessable = 1 # Almost impossible to guess 
+            SSHCreds.unique = 1 # completely unique
             # Credentials data
             SSHEncryptedCreds = pythClasses.ns.Data()
             SSHEncryptedCreds.metaconcept = "Data"
@@ -136,27 +169,41 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexigridDataSSH = pythClasses.ns.Data()
             plexigridDataSSH.metaconcept = "Data"
             plexigridDataSSH.name = "Metering Data"
-    
 
-
-            # Add software vulnerabilities to sales office
-            vulnerabilityOfficeSales = pythClasses.ns.SoftwareVulnerability()
-            vulnerabilityOfficeSales.metaconcept = "SoftwareVulnerability"
-            vulnerabilityOfficeSales.name = "SoftwareVulnerability Office"
-            # Add software vulnerabilities to devs office
-            vulnerabilityOfficeDev = pythClasses.ns.SoftwareVulnerability()
-            vulnerabilityOfficeDev.metaconcept = "SoftwareVulnerability"
-            vulnerabilityOfficeDev.name = "SoftwareVulnerability Office"
-            # Identity symbolyzing a regular User
-            plexigridRegularIdentity = pythClasses.ns.Identity()
-            plexigridRegularIdentity.metaconcept = "Identity"
-            plexigridRegularIdentity.name = "Regular User"
-            # User symbolyzing the real human (PM)
-            plexigridRegularUser = pythClasses.ns.User()
-            plexigridRegularUser.metaconcept = "User"
-            plexigridRegularUser.name = "Dev User" 
-
-
+            # Add credentials to the dev identity connected to onedrive
+            MicrosoftDevCreds = pythClasses.ns.Credentials()
+            MicrosoftDevCreds.metaconcept = "Credentials"
+            MicrosoftDevCreds.name = "Password/Username" 
+            MicrosoftDevCreds.notGuessable = 0.6 # How hard it is to guess the password (not a part of the most common password dictionary)
+            MicrosoftDevCreds.unique = 0.8 # assume that the password is not used for multiple services
+            # Add MFA to this identity
+            MicrosoftMFADevCreds = pythClasses.ns.Credentials()
+            MicrosoftMFADevCreds.metaconcept = "Credentials"
+            MicrosoftMFADevCreds.name = "MFA"
+            MicrosoftMFADevCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
+            MicrosoftMFADevCreds.unique = 1
+            # Add credentials to the sales identity connected to onedrive
+            MicrosoftSalesCreds = pythClasses.ns.Credentials()
+            MicrosoftSalesCreds.metaconcept = "Credentials"
+            MicrosoftSalesCreds.name = "Password/Username" 
+            MicrosoftSalesCreds.notGuessable = 0.6 # How hard it is to guess the password (not a part of the most common password dictionary)
+            MicrosoftSalesCreds.unique = 0.8 # assume that the password is not used for multiple services
+            # Add MFA to this identity
+            MicrosoftMFASalesCreds = pythClasses.ns.Credentials()
+            MicrosoftMFASalesCreds.metaconcept = "Credentials"
+            MicrosoftMFASalesCreds.name = "MFA"
+            MicrosoftMFASalesCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
+            MicrosoftMFASalesCreds.unique = 1 # unique
+            # Add identity that the dev user use for Microsoft
+            plexigridDevMicrosoftIdentity = pythClasses.ns.Identity()
+            plexigridDevMicrosoftIdentity.metaconcept = "Identity"
+            plexigridDevMicrosoftIdentity.name = "Dev Identity"    
+            
+            # Add PM office
+            plexigridSalesOffice = pythClasses.ns.Application()
+            plexigridSalesOffice.metaconcept = "Application"
+            plexigridSalesOffice.name = "PM's Office station"
+            plexigridSalesOffice.supplyChainAuditing = 1
             # Add hardware (computer) to Sales office
             plexigridSalesHardware = pythClasses.ns.Hardware()
             plexigridSalesHardware.metaconcept = "Hardware"
@@ -165,6 +212,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexigridSalesHardwarevuln = pythClasses.ns.HardwareVulnerability()
             plexigridSalesHardwarevuln.metaconcept = "HardwareVulnerability"
             plexigridSalesHardwarevuln.name = "HardwareVulnerability"
+            plexigridSalesHardwarevuln.effortRequiredToExploit = 1 # they keep the hardware up to date and even if stolen the hackers need to spend alot of time to compromise
+            plexigridSalesHardwarevuln.physicalAccessRequired = 1 # They need physical access to be able to exploit hardware
             # Add hardware (computer) to Dev office
             plexigridDevHardware = pythClasses.ns.Hardware()
             plexigridDevHardware.metaconcept = "Hardware"
@@ -173,16 +222,19 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexigridDevHardwarevuln = pythClasses.ns.HardwareVulnerability()
             plexigridDevHardwarevuln.metaconcept = "HardwareVulnerability"
             plexigridDevHardwarevuln.name = "HardwareVulnerability"
+            plexigridSalesHardwarevuln.effortRequiredToExploit = 1 # they keep the hardware up to date and even if stolen the hackers need to spend alot of time to compromise
+            plexigridSalesHardwarevuln.physicalAccessRequired = 1 # They need physical access to be able to exploit hardware
             # Add dev office
             plexigridDevOffice = pythClasses.ns.Application()
             plexigridDevOffice.metaconcept = "Application"
             plexigridDevOffice.name = "Devs Office station"
-            plexigridDevOffice.supplyChainAuditing = 1
             # connection between sales network PM office computer
             plexigridSalesOfficeConn = pythClasses.ns.ConnectionRule()
             plexigridSalesOfficeConn.metaconcept = "ConnectionRule"
             plexigridSalesOfficeConn.name = "ConnectionRule"
-            # Mail-Server for Plexigrid project/sales
+            plexigridSalesOfficeConn.restricted = 0.6 # ports on the computer that are blocked
+            plexigridSalesOfficeConn.payloadInspection = 0.7 # Sophos try to filter malicous payloads
+            # Mail-Server for Plexigrid project/sales (microsoft server)
             plexigridSalesMail = pythClasses.ns.Application()
             plexigridSalesMail.metaconcept = "Application"
             plexigridSalesMail.name = "mail server"
@@ -195,55 +247,81 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexigridPMUser = pythClasses.ns.User()
             plexigridPMUser.metaconcept = "User"
             plexigridPMUser.name = "PM" 
-            # Software vulnreability for Project/sales mail server
+            plexigridPMUser.securityAwareness = 0.5 # not very aware
+            # Software vulnreability for Project/sales mail microsoft server
             vulnerabilitySalesMail = pythClasses.ns.SoftwareVulnerability()
             vulnerabilitySalesMail.metaconcept = "SoftwareVulnerability"
             vulnerabilitySalesMail.name = "SoftwareVulnerability Mail server"
-            # Mail-server for Plexigrid Dev network
-            plexigridDevMail = pythClasses.ns.Application()
-            plexigridDevMail.metaconcept = "Application"
-            plexigridDevMail.name = "mail server"
-            plexigridDevMail.supplyChainAuditing = 1
-            # Software vulnreability for Dev mail server
-            vulnerabilityDevMail = pythClasses.ns.SoftwareVulnerability()
-            vulnerabilityDevMail.metaconcept = "SoftwareVulnerability"
-            vulnerabilityDevMail.name = "SoftwareVulnerability Mail server"
+            vulnerabilitySalesMail.highComplexityExploitRequired = 0.95 # needs really advanced exploits
+            vulnerabilitySalesMail.confidentialityImpactLimitations = 0.95 # Even if an exploit works it has limited effect on the confidentiality, stolen encryption keys and password can't be used on data directly due to the in "rest" encryption 
+            vulnerabilitySalesMail.availabilityImpactLimitations = 0.95 # microsoft have great resources, related to deny
+            vulnerabilitySalesMail.integrityImpactLimitations = 0.95 # Tough to modify the data the attacker want since the data is stored encrypted as chunks in different containers
+            vulnerabilitySalesMail.highPrivilegesRequired = 1 # need admin access to change anything (microsoft staff)
+            vulnerabilitySalesMail.networkAccessRequired = 1 # need to be connected to the network to even try to exploit
             # Metering Data going from DSO->PM
             plexigridDataDSO = pythClasses.ns.Data()
             plexigridDataDSO.metaconcept = "Data"
             plexigridDataDSO.name = "Metering Data"
+            # Unencrypted metering Data
+            # unencryptedData = pythClasses.ns.Data()
+            # unencryptedData.metaconcept = "Data"
+            # unencryptedData.name = "Unencrypted Metering Data"
+
+            # Credentials to private dev office station
+            plexidevCredentials = pythClasses.ns.Credentials()
+            plexidevCredentials.metaconcept = "Credentials"
+            plexidevCredentials.name = "Password/Username" 
+            plexidevCredentials.notGuessable = 0.6 # How hard it is to guess the password (not a part of the most common password dictionary)
+            plexidevCredentials.unique = 0.8 # assume that the password is not used for multiple services
+            # Identity dev to office station
+            plexiDevIdentityOffice = pythClasses.ns.Identity()
+            plexiDevIdentityOffice.metaconcept = "Identity"
+            plexiDevIdentityOffice.name = "Dev identity"
+            # Identity PM to office station
+            plexiPMIdentityOffice = pythClasses.ns.Identity()
+            plexiPMIdentityOffice.metaconcept = "Identity"
+            plexiPMIdentityOffice.name = "PM identity"
+            # Credentials to private PM office station
+            plexiPMCredentials = pythClasses.ns.Credentials()
+            plexiPMCredentials.metaconcept = "Credentials"
+            plexiPMCredentials.name = "Password/Username" 
+            plexiPMCredentials.notGuessable = 0.6 # How hard it is to guess the password (not a part of the most common password dictionary)
+            plexiPMCredentials.unique = 0.8 # assume that the password is not used for multiple services
+            
+
             # Add to model
             honorModel.add_asset(plexiDevNetwork)
             honorModel.add_asset(plexiSalesNetwork)
+            
             honorModel.add_asset(plexiSalesConn)
             honorModel.add_asset(plexigridSalesMail)
-            honorModel.add_asset(plexigridDevMail)
             honorModel.add_asset(plexigridDataDSO)
-            honorModel.add_asset(vulnerabilityDevMail)
             honorModel.add_asset(vulnerabilitySalesMail)
             honorModel.add_asset(plexiMailSalesConn)
-            honorModel.add_asset(plexiMailDevConn)
             honorModel.add_asset(plexigridPMIdentity)
             honorModel.add_asset(plexigridPMUser)
             honorModel.add_asset(plexigridDevOfficeConn)
             honorModel.add_asset(plexigridSalesOfficeConn)
             honorModel.add_asset(plexigridSalesOffice)
             honorModel.add_asset(plexigridDevOffice)
+            
             honorModel.add_asset(plexiInternetDevFirewall)
             honorModel.add_asset(plexiInternetSalesFirewall)
+            
             honorModel.add_asset(vulnerabilityFirewallInternetSales)
             honorModel.add_asset(vulnerabilityFirewallInternetDev)
             honorModel.add_asset(plexigridDevHardware)
             honorModel.add_asset(plexigridSalesHardware)
             honorModel.add_asset(plexigridDevHardwarevuln)
             honorModel.add_asset(plexigridSalesHardwarevuln)
+            honorModel.add_asset(cloudNetwork)
+            honorModel.add_asset(CloudInternetConn)
             honorModel.add_asset(plexiDevConn)
 
             honorModel.add_asset(plexigridRegularUser)
-            honorModel.add_asset(plexigridRegularIdentity)
             honorModel.add_asset(vulnerabilityOfficeSales)
-            honorModel.add_asset(vulnerabilityOfficeDev)                        
-            
+            honorModel.add_asset(vulnerabilityOfficeDev)
+
             honorModel.add_asset(plexigridSalesIDPS)
             honorModel.add_asset(plexigridDevIDPS)
             honorModel.add_asset(plexigriddatabase)
@@ -252,11 +330,24 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_asset(SSHEncryptedCreds)
             honorModel.add_asset(replicatedMeterDatatoDatabase)
             honorModel.add_asset(plexigridDataSSH)
+            honorModel.add_asset(MicrosoftDevCreds)
+            honorModel.add_asset(MicrosoftMFADevCreds)
+            honorModel.add_asset(MicrosoftSalesCreds)
+            honorModel.add_asset(MicrosoftMFASalesCreds)
+
+            honorModel.add_asset(plexigridDevMicrosoftIdentity)
 
             honorModel.add_asset(plexigridApplication)
             honorModel.add_asset(plexiApplicationcloudconn)
             honorModel.add_asset(plexigridAppDatabaseHardware)
             honorModel.add_asset(plexigridAppDataBaseHardwarevuln)
+
+            # honorModel.add_asset(unencryptedData)
+
+            honorModel.add_asset(plexidevCredentials)
+            honorModel.add_asset(plexiDevIdentityOffice)
+            honorModel.add_asset(plexiPMIdentityOffice)
+            honorModel.add_asset(plexiPMCredentials)
 
 ################################################## Test 2 ########################################################################       
 
@@ -1250,7 +1341,10 @@ def add_plexigrid_assets(pythClasses, honorModel):
 ################################################## Test 1 ########################################################################       
 
         if test_case1:
-           
+            # Add Cloud to internet
+            assocCloudInternet = pythClasses.ns.NetworkConnection()
+            assocCloudInternet.networks = [cloudNetwork]
+            assocCloudInternet.netConnections = [CloudInternetConn]
             # Add networkconnections project/sales (conn to internet)
             assocConnSalesnetworkInternet = pythClasses.ns.NetworkConnection()
             assocConnSalesnetworkInternet.networks = [plexiSalesNetwork]
@@ -1259,9 +1353,9 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocConnDevnetworkInternet = pythClasses.ns.NetworkConnection()
             assocConnDevnetworkInternet.networks = [plexiDevNetwork]
             assocConnDevnetworkInternet.netConnections = [plexiDevConn]
-            # Add Sales mail server to network
+            # Add Sales mail server to microsoftCloud network
             assocConnSalesMail = pythClasses.ns.NetworkConnection()
-            assocConnSalesMail.networks = [plexiSalesNetwork]
+            assocConnSalesMail.networks = [cloudNetwork]
             assocConnSalesMail.netConnections = [plexiMailSalesConn]
             assocConnMailSales = pythClasses.ns.ApplicationConnection()
             assocConnMailSales.applications = [plexigridSalesMail]
@@ -1270,17 +1364,6 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocVulnSales = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
             assocVulnSales.application = [plexigridSalesMail]
             assocVulnSales.vulnerabilities = [vulnerabilitySalesMail]
-            # Add devs mail server to network
-            assocConnDevMail = pythClasses.ns.NetworkConnection()
-            assocConnDevMail.networks = [plexiDevNetwork]
-            assocConnDevMail.netConnections = [plexiMailDevConn]
-            assocConnMailDev = pythClasses.ns.ApplicationConnection()
-            assocConnMailDev.applications = [plexigridDevMail]
-            assocConnMailDev.appConnections = [plexiMailDevConn]
-            # Add softwarevuln. to devs mail server
-            assocVulnDevs = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
-            assocVulnDevs.application = [plexigridDevMail]
-            assocVulnDevs.vulnerabilities = [vulnerabilityDevMail]
             # Add dev office to dev network
             assocConnDevOffice = pythClasses.ns.NetworkConnection()
             assocConnDevOffice.networks = [plexiDevNetwork]
@@ -1305,34 +1388,18 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocSalesHardware = pythClasses.ns.SysExecution()
             assocSalesHardware.hostHardware = [plexigridSalesHardware]
             assocSalesHardware.sysExecutedApps=[plexigridSalesOffice]
-
-            # SoftwareVuln to sales
-            assocSalesSoftwareVuln = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
-            assocSalesSoftwareVuln.application = [plexigridSalesOffice]
-            assocSalesSoftwareVuln.vulnerabilities = [vulnerabilityOfficeSales]
-            # SoftwareVuln to devs
-            assocDevSoftwareVuln = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
-            assocDevSoftwareVuln.application = [plexigridDevOffice]
-            assocDevSoftwareVuln.vulnerabilities = [vulnerabilityOfficeDev]
-            # Add identity to Sales office so they have the same privs
-            assocIdentityDevOffice = pythClasses.ns.LowPrivilegeApplicationAccess()
-            assocIdentityDevOffice.lowPrivAppIAMs = [plexigridRegularIdentity]
-            assocIdentityDevOffice.lowPrivApps = [plexigridDevOffice]
-            # Add user to identity to enable social engineering attacks
-            assocIdentityDevUser = pythClasses.ns.UserAssignedIdentities()
-            assocIdentityDevUser.users = [plexigridRegularUser]
-            assocIdentityDevUser.userIds = [plexigridRegularIdentity]
-
-
             # Vulnerability to sales office zone
             assocVulnHardwareSales = pythClasses.ns.hardwareVulnerability()    
             assocVulnHardwareSales.vulnerabilities = [plexigridSalesHardwarevuln]
             assocVulnHardwareSales.hardware = [plexigridSalesHardware]
             # Add identity to sales mail server
-            assocIdentityMail = pythClasses.ns.ExecutionPrivilegeAccess()
-            assocIdentityMail.executionPrivIAMs = [plexigridPMIdentity]
-            assocIdentityMail.execPrivApps = [plexigridSalesMail]
-            
+            assocIdentityMail = pythClasses.ns.LowPrivilegeApplicationAccess()
+            assocIdentityMail.lowPrivAppIAMs = [plexigridPMIdentity]
+            assocIdentityMail.lowPrivApps = [plexigridSalesMail]
+            # Add identity to Sales office so they have the same privs
+            assocIdentityOffice = pythClasses.ns.ExecutionPrivilegeAccess()
+            assocIdentityOffice.executionPrivIAMs = [plexigridPMIdentity]
+            assocIdentityOffice.execPrivApps = [plexigridSalesOffice]
             # Add user to identity to enable social engineering attacks
             assocIdentityUser = pythClasses.ns.UserAssignedIdentities()
             assocIdentityUser.users = [plexigridPMUser]
@@ -1353,6 +1420,17 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocInternetSalesFirewallVuln = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
             assocInternetSalesFirewallVuln.application = [plexiInternetSalesFirewall]
             assocInternetSalesFirewallVuln.vulnerabilities = [vulnerabilityFirewallInternetSales]
+
+            # SoftwareVuln to sales
+            assocSalesSoftwareVuln = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
+            assocSalesSoftwareVuln.application = [plexigridSalesOffice]
+            assocSalesSoftwareVuln.vulnerabilities = [vulnerabilityOfficeSales]
+            # SoftwareVuln to devs
+            assocDevSoftwareVuln = pythClasses.ns.ApplicationVulnerability_SoftwareVulnerability_Application()
+            assocDevSoftwareVuln.application = [plexigridDevOffice]
+            assocDevSoftwareVuln.vulnerabilities = [vulnerabilityOfficeDev]
+            
+
 
             # Add idps to office stations
             assocIDPSSalesOffice = pythClasses.ns.AppProtection()
@@ -1394,7 +1472,10 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDevtoDatabase = pythClasses.ns.SendData()
             assocDevtoDatabase.senderApp = [plexigridDevOffice]
             assocDevtoDatabase.sentData = [plexigridDataSSH]
-            
+            # Connect app to conn
+            assocConndatabase = pythClasses.ns.ApplicationConnection()
+            assocConndatabase.applications = [plexigriddatabase]
+            assocConndatabase.appConnections = [plexidatabasecloudconn]
             # Connect database to conn to cloud
             assocConndatabase = pythClasses.ns.ApplicationConnection()
             assocConndatabase.applications = [plexigriddatabase]
@@ -1418,18 +1499,44 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocApplicationHardware = pythClasses.ns.SysExecution()
             assocApplicationHardware.hostHardware = [plexigridAppDatabaseHardware]
             assocApplicationHardware.sysExecutedApps=[plexigridApplication]
-
-            
+            # Connect Dev user to Microsoft
+            assocDevtoMicrosoft = pythClasses.ns.LowPrivilegeApplicationAccess()
+            assocDevtoMicrosoft.lowPrivAppIAMs = [plexigridDevMicrosoftIdentity]
+            assocDevtoMicrosoft.lowPrivApps = [plexigridSalesMail]
+            # Connect Pm to Microsoft
+            assocSalestoMicrosoft = pythClasses.ns.LowPrivilegeApplicationAccess()
+            assocSalestoMicrosoft.lowPrivAppIAMs = [plexigridPMIdentity]
+            assocSalestoMicrosoft.lowPrivApps = [plexigridSalesMail]
+            # Connect credentials to dev user
+            assocCredDevIdentity = pythClasses.ns.IdentityCredentials()
+            assocCredDevIdentity.identities = [plexigridDevMicrosoftIdentity]
+            assocCredDevIdentity.credentials = [MicrosoftDevCreds]
+            # Connect MFA
+            assocCredMFADevIdentity = pythClasses.ns.ConditionalAuthentication()
+            assocCredMFADevIdentity.requiredFactors = [MicrosoftMFADevCreds]
+            assocCredMFADevIdentity.credentials = [MicrosoftDevCreds]
+            # Connect credentials to sales user
+            assocCredSalesIdentity = pythClasses.ns.IdentityCredentials()
+            assocCredSalesIdentity.identities = [plexigridPMIdentity]
+            assocCredSalesIdentity.credentials = [MicrosoftSalesCreds]
+            # Connect MFA
+            assocCredMFASalesIdentity = pythClasses.ns.ConditionalAuthentication()
+            assocCredMFASalesIdentity.requiredFactors = [MicrosoftMFASalesCreds]
+            assocCredMFASalesIdentity.credentials = [MicrosoftSalesCreds]
+            # Connect dev user to new identity
+            assocMicrosoftIdentityDevUser = pythClasses.ns.UserAssignedIdentities()
+            assocMicrosoftIdentityDevUser.users = [plexigridRegularUser]
+            assocMicrosoftIdentityDevUser.userIds = [plexigridDevMicrosoftIdentity]
 
 
            
-            # Send data from Sales mail to Dev mail
+            # Send data from Sales office to onedrive
             assocSendSales = pythClasses.ns.SendData()
-            assocSendSales.senderApp = [plexigridSalesMail]
+            assocSendSales.senderApp = [plexigridSalesOffice]
             assocSendSales.sentData = [plexigridDataDSO]
-            # receive data to Dev mail from sales mail
+            # receive data to dev office from sales office
             assocRecDevs = pythClasses.ns.ReceiveData()
-            assocRecDevs.receiverApp = [plexigridDevMail]
+            assocRecDevs.receiverApp = [plexigridDevOffice]
             assocRecDevs.receivedData = [plexigridDataDSO]
             # The data is accessable from the whole sales network
             assocDataSales = pythClasses.ns.DataInTransit()
@@ -1439,22 +1546,69 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDataDev = pythClasses.ns.DataInTransit()
             assocDataDev.transitNetwork = [plexiDevNetwork]
             assocDataDev.transitData = [plexigridDataDSO]
+            # The data is accessable from the whole cloud network
+            assocDataCloud = pythClasses.ns.DataInTransit()
+            assocDataCloud.transitNetwork = [cloudNetwork]
+            assocDataCloud.transitData = [plexigridDataDSO]
             # Receive data from DSO to Sales
             assocDSOSales = pythClasses.ns.ReceiveData()
             assocDSOSales.receiverApp = [plexigridSalesMail]
             assocDSOSales.receivedData = [plexigridDataDSO]
+            # Send data from mail server to dev
+            assocSendMailServer = pythClasses.ns.SendData()
+            assocSendMailServer.senderApp = [plexigridSalesOffice]
+            assocSendMailServer.sentData = [plexigridDataDSO]
+
+
+            # Connect the unencrypted data to use for local storage
+            assocLocallyUnencryptedData = pythClasses.ns.Replica()
+            assocLocallyUnencryptedData.replicatedInformation = [replicatedMeterDatatoDatabase]
+            assocLocallyUnencryptedData.dataReplicas = [plexigridDataDSO]
+            # Add locally downloaded data
+            assocLocallyDev = pythClasses.ns.DataHosting()
+            assocLocallyDev.hostedData = [plexigridDataDSO]
+            assocLocallyDev.hardware = [plexigridDevHardware]
+            # Add locally downloaded data
+            assocLocallyPM = pythClasses.ns.DataHosting()
+            assocLocallyPM.hostedData = [plexigridDataDSO]
+            assocLocallyPM.hardware = [plexigridSalesHardware]
+
+            # Connect office identity to dev user
+            assocIdentityOfficeDevUser = pythClasses.ns.UserAssignedIdentities()
+            assocIdentityOfficeDevUser.users = [plexigridRegularUser]
+            assocIdentityOfficeDevUser.userIds = [plexiDevIdentityOffice]
+            # Connect office identity to pm user
+            assocIdentityOfficePMUser = pythClasses.ns.UserAssignedIdentities()
+            assocIdentityOfficePMUser.users = [plexigridPMUser]
+            assocIdentityOfficePMUser.userIds = [plexiPMIdentityOffice]
+            # Connect office credentials to PM office identity
+            assocCredPMOfficeIdentity = pythClasses.ns.IdentityCredentials()
+            assocCredPMOfficeIdentity.identities = [plexiPMIdentityOffice]
+            assocCredPMOfficeIdentity.credentials = [plexiPMCredentials]
+            # Connect identity with admin right to PM office
+            assocPMOfficeIdentity = pythClasses.ns.ExecutionPrivilegeAccess()
+            assocPMOfficeIdentity.executionPrivIAMs = [plexiPMIdentityOffice]
+            assocPMOfficeIdentity.execPrivApps = [plexigridSalesOffice]
+            # Connect office credentials to dev office identity
+            assocCredDevOfficeIdentity = pythClasses.ns.IdentityCredentials()
+            assocCredDevOfficeIdentity.identities = [plexiDevIdentityOffice]
+            assocCredDevOfficeIdentity.credentials = [plexidevCredentials]
+            # Connect identity with admin right to Dev office
+            assocDevOfficeIdentity = pythClasses.ns.ExecutionPrivilegeAccess()
+            assocDevOfficeIdentity.executionPrivIAMs = [plexiDevIdentityOffice]
+            assocDevOfficeIdentity.execPrivApps = [plexigridDevOffice]
+
             # Add every association to the model
             
             honorModel.add_association(assocConnSalesnetworkInternet)
+            
             honorModel.add_association(assocVulnSales)
-            honorModel.add_association(assocVulnDevs)
             honorModel.add_association(assocSendSales)
             honorModel.add_association(assocRecDevs)
             honorModel.add_association(assocDataSales)
             honorModel.add_association(assocDataDev)
             honorModel.add_association(assocDSOSales)
-            honorModel.add_association(assocConnMailDev)
-            honorModel.add_association(assocConnDevMail)
+            honorModel.add_association(assocSendMailServer)
             honorModel.add_association(assocConnSalesMail)
             honorModel.add_association(assocConnMailSales)
             honorModel.add_association(assocIdentityMail)
@@ -1463,21 +1617,25 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocConnOfficeDev)
             honorModel.add_association(assocConnSalesOffice)
             honorModel.add_association(assocConnOfficeSales)
+            honorModel.add_association(assocIdentityOffice)
             honorModel.add_association(assocConnDevnetworkInternet)
             honorModel.add_association(assocInternetDevFirewall)
             honorModel.add_association(assocInternetSalesFirewall)
+            
             honorModel.add_association(assocInternetDevFirewallVuln)
             honorModel.add_association(assocInternetSalesFirewallVuln)
             honorModel.add_association(assocDevHardware)
             honorModel.add_association(assocSalesHardware)
             honorModel.add_association(assocVulnHardwareDev)
             honorModel.add_association(assocVulnHardwareSales)
+            
+            honorModel.add_association(assocCloudInternet)
+            honorModel.add_association(assocDataCloud)
 
             honorModel.add_association(assocSalesSoftwareVuln)
             honorModel.add_association(assocDevSoftwareVuln)
-            honorModel.add_association(assocIdentityDevOffice)
-            honorModel.add_association(assocIdentityDevUser)
-            
+
+
             honorModel.add_association(assocIDPSDevOffice)
             honorModel.add_association(assocIDPSSalesOffice)
             honorModel.add_association(assocCreddevoffice)
@@ -1489,6 +1647,12 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocDatabasefromDev)
             honorModel.add_association(assocDevtoDatabase)
             honorModel.add_association(assocConndatabase)
+            honorModel.add_association(assocCredDevIdentity)
+            honorModel.add_association(assocCredSalesIdentity)
+            honorModel.add_association(assocCredMFADevIdentity)
+            honorModel.add_association(assocCredMFASalesIdentity)
+            honorModel.add_association(assocMicrosoftIdentityDevUser)
+            honorModel.add_association(assocDevtoMicrosoft)
 
             honorModel.add_association(assocConndatabase)
             honorModel.add_association(assocConndatabaseCloud)
@@ -1497,6 +1661,17 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocConnApplication)
             honorModel.add_association(assocConnApplicationCloud)
             honorModel.add_association(assocApplicationHardware)
+            
+
+            honorModel.add_association(assocLocallyDev)
+            honorModel.add_association(assocLocallyPM)
+            honorModel.add_association(assocLocallyUnencryptedData)
+            honorModel.add_association(assocCredPMOfficeIdentity)
+            honorModel.add_association(assocPMOfficeIdentity)
+            honorModel.add_association(assocCredDevOfficeIdentity)
+            honorModel.add_association(assocDevOfficeIdentity)
+            honorModel.add_association(assocIdentityOfficeDevUser)
+            honorModel.add_association(assocIdentityOfficePMUser)
 
 
 ################################################## Test 2 ########################################################################       
@@ -2797,11 +2972,17 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDevInternet = pythClasses.ns.NetworkConnection()
             assocDevInternet.networks = [internet]
             assocDevInternet.netConnections = [plexiDevConn]
+            # connect cloud network to internet
+            assocInternetCloud = pythClasses.ns.NetworkConnection()
+            assocInternetCloud.networks = [internet]
+            assocInternetCloud.netConnections = [CloudInternetConn]
 
             # Add conn to internet
             DMZInternetConn = pythClasses.ns.ConnectionRule()
             DMZInternetConn.metaconcept = "ConnectionRule"
             DMZInternetConn.name = "ConnectionRule"
+            DMZInternetConn.payloadInspection = 0.95 # shall probably have some kind of IDPS
+            DMZInternetConn.restricted = 0.6 # protocols that can be used for exploit are closed
 
             # Internet connected to public DMZ
             assocConnInternetDMZ = pythClasses.ns.NetworkConnection()
@@ -2825,10 +3006,16 @@ def add_plexigrid_assets(pythClasses, honorModel):
             DSOOfficeHardwareVuln = pythClasses.ns.HardwareVulnerability()
             DSOOfficeHardwareVuln.metaconcept = "HardwareVulnerability"
             DSOOfficeHardwareVuln.name = "HardwareVulnerability"
+            DSOOfficeHardwareVuln.effortRequiredToExploit = 1 # they keep the hardware up to date and even if stolen the hackers need to spend alot of time to compromise
+            DSOOfficeHardwareVuln.physicalAccessRequired = 1 # They need physical access to be able to exploit hardware
             # Software vulnerability
             vulnerabilityDSOOffice = pythClasses.ns.SoftwareVulnerability()
             vulnerabilityDSOOffice.metaconcept = "SoftwareVulnerability"
             vulnerabilityDSOOffice.name = "SoftwareVulnerability"
+            vulnerabilityDSOOffice.highComplexityExploitRequired = 0.8 # difficult but not more than microsoft
+            vulnerabilityDSOOffice.userInteractionRequired = 1 # The user has to click something malicious
+            vulnerabilityDSOOffice.highPrivilegesRequired = 1 # Need to have admin role
+            vulnerabilityDSOOffice.networkAccessRequired = 1 # Need network access to exploit
             # Identity symbolyzing a regular User
             DSORegularIdentity = pythClasses.ns.Identity()
             DSORegularIdentity.metaconcept = "Identity"
@@ -2841,6 +3028,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             DSOOfficeStationConn = pythClasses.ns.ConnectionRule()
             DSOOfficeStationConn.metaconcept = "ConnectionRule"
             DSOOfficeStationConn.name = "ConnectionRule"
+            DSOOfficeStationConn.payloadInspection = 0.95 # shall probably have some kind of IDPS
+            DSOOfficeStationConn.restricted = 0.6 # protocols that can be used for exploit are closed
             # connect DSO application to office
             assocConnOfficeDSO = pythClasses.ns.ApplicationConnection()
             assocConnOfficeDSO.applications = [DSOOfficeStation]
@@ -2924,11 +3113,13 @@ def add_plexigrid_assets(pythClasses, honorModel):
             DMZMailserver = pythClasses.ns.Application()
             DMZMailserver.metaconcept = "Application"
             DMZMailserver.name = "Mail server"
-            DMZMailserver.supplyChainAuditing = 1
             # Add mail server software vuln
             vulnerabilityDMZMail = pythClasses.ns.SoftwareVulnerability()
             vulnerabilityDMZMail.metaconcept = "SoftwareVulnerability"
             vulnerabilityDMZMail.name = "SoftwareVulnerability"
+            vulnerabilityDMZMail.highComplexityExploitRequired = 0.95 # hard to exploit
+            vulnerabilityDMZMail.networkAccessRequired = 0.95 # need to have network access
+            vulnerabilityDMZMail.highPrivilegesRequired = 0.95 # need admin privilege to exploit
             # Add mail server conn to public dmz
             DMZMailConn = pythClasses.ns.ConnectionRule()
             DMZMailConn.metaconcept = "ConnectionRule"
@@ -2972,6 +3163,12 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDataDMZTransit= pythClasses.ns.DataInTransit()
             assocDataDMZTransit.transitNetwork = [DMZNetwork]
             assocDataDMZTransit.transitData = [plexigridDataDSO]
+            
+            # Add locally downloaded data
+            assocLocallyDSO = pythClasses.ns.DataHosting()
+            assocLocallyDSO.hostedData = [plexigridDataDSO]
+            assocLocallyDSO.hardware = [DSOOfficeHardware]
+
 
             # Add to model
             honorModel.add_asset(internet)
@@ -3012,6 +3209,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocConnDSOOfficeDMZ)
             honorModel.add_association(assocVulnHardwareDSOOffice)
             honorModel.add_association(assocConnMailDmz)
+            honorModel.add_association(assocInternetCloud)
             # Data
             honorModel.add_association(assocSendDSO)
             honorModel.add_association(assocDataDMZTransit)
@@ -3019,8 +3217,11 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocSendDMZMail)
             honorModel.add_association(assocDataInternet)
 
-
+           
+            honorModel.add_association(assocLocallyDSO)
+            
             # Save test case
+
             honorModel.save_to_file("./TestCases/case1.json")
             return "./TestCases/case1.json"
 
