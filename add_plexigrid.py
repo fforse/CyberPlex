@@ -18,15 +18,17 @@ add_assets = True
 addToHonorModel = False
 # Use the relevant parts of the DSO
 addDSO = True
+# Last testattack is slighlty different
+lastTestAttack = False
 
 # Email->Email
 test_case1 = False
 # Email->Onedrive
 test_case2 = False
 #SFTP-> Email
-test_case3 = False
+test_case3 = True
 #SFTP->Onedrive
-test_case4 = True
+test_case4 = False
 # DSO SFTP-> database (skip PM)
 test_case5 = False
 # DSO OneDrive -> database (skip PM)
@@ -155,8 +157,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SSHCreds = pythClasses.ns.Credentials()
             SSHCreds.metaconcept = "Credentials"
             SSHCreds.name = "Encryption keys"
-            SSHCreds.notGuessable = 1 # Almost impossible to guess 
-            SSHCreds.unique = 1 # completely unique
+            SSHCreds.notGuessable = 0.95 # Almost impossible to guess 
+            SSHCreds.unique = 0.95 # completely unique
             # Credentials data
             SSHEncryptedCreds = pythClasses.ns.Data()
             SSHEncryptedCreds.metaconcept = "Data"
@@ -181,7 +183,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             MicrosoftMFADevCreds.metaconcept = "Credentials"
             MicrosoftMFADevCreds.name = "MFA"
             MicrosoftMFADevCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            MicrosoftMFADevCreds.unique = 1
+            MicrosoftMFADevCreds.unique = 0.95
             # Add credentials to the sales identity connected to onedrive
             MicrosoftSalesCreds = pythClasses.ns.Credentials()
             MicrosoftSalesCreds.metaconcept = "Credentials"
@@ -193,7 +195,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             MicrosoftMFASalesCreds.metaconcept = "Credentials"
             MicrosoftMFASalesCreds.name = "MFA"
             MicrosoftMFASalesCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            MicrosoftMFASalesCreds.unique = 1 # unique
+            MicrosoftMFASalesCreds.unique = 0.95 # unique
             # Add identity that the dev user use for Microsoft
             plexigridDevMicrosoftIdentity = pythClasses.ns.Identity()
             plexigridDevMicrosoftIdentity.metaconcept = "Identity"
@@ -285,7 +287,6 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexiPMCredentials = pythClasses.ns.Credentials()
             plexiPMCredentials.metaconcept = "Credentials"
             plexiPMCredentials.name = "Password/Username" 
-            plexiPMCredentials.notGuessable = 0.6 # How hard it is to guess the password (not a part of the most common password dictionary)
             plexiPMCredentials.unique = 0.8 # assume that the password is not used for multiple services
             
 
@@ -490,8 +491,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SSHCreds = pythClasses.ns.Credentials()
             SSHCreds.metaconcept = "Credentials"
             SSHCreds.name = "Encryption keys"
-            SSHCreds.notGuessable = 1 # Almost impossible to guess 
-            SSHCreds.unique = 1 # completely unique
+            SSHCreds.notGuessable = 0.95 # Almost impossible to guess 
+            SSHCreds.unique = 0.95 # completely unique
             # Credentials data
             SSHEncryptedCreds = pythClasses.ns.Data()
             SSHEncryptedCreds.metaconcept = "Data"
@@ -515,7 +516,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             OneDriveMFADevCreds.metaconcept = "Credentials"
             OneDriveMFADevCreds.name = "MFA"
             OneDriveMFADevCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            OneDriveMFADevCreds.unique = 1
+            OneDriveMFADevCreds.unique = 0.95
             # Add credentials to the sales identity connected to onedrive
             OneDriveSalesCreds = pythClasses.ns.Credentials()
             OneDriveSalesCreds.metaconcept = "Credentials"
@@ -527,7 +528,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             OneDriveMFASalesCreds.metaconcept = "Credentials"
             OneDriveMFASalesCreds.name = "MFA"
             OneDriveMFASalesCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            OneDriveMFASalesCreds.unique = 1 # unique
+            OneDriveMFASalesCreds.unique = 0.95 # unique
             # Add identity that the dev user use for OneDrive
             plexigridDevOneDriveIdentity = pythClasses.ns.Identity()
             plexigridDevOneDriveIdentity.metaconcept = "Identity"
@@ -540,8 +541,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             PMOneDriveCreds = pythClasses.ns.Credentials()
             PMOneDriveCreds.metaconcept = "Credentials"
             PMOneDriveCreds.name = "Encryption keys"
-            PMOneDriveCreds.notGuessable = 1 # Almost impossible to guess 
-            PMOneDriveCreds.unique = 1 # completely unique
+            PMOneDriveCreds.notGuessable = 0.95 # Almost impossible to guess 
+            PMOneDriveCreds.unique = 0.95 # completely unique
             # Add encryption keys data between OneDrive and PM
             PMOneDriveEncryptedCreds = pythClasses.ns.Data()
             PMOneDriveEncryptedCreds.metaconcept = "Data"
@@ -554,8 +555,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             DevOneDriveCreds = pythClasses.ns.Credentials()
             DevOneDriveCreds.metaconcept = "Credentials"
             DevOneDriveCreds.name = "Encryption keys"
-            DevOneDriveCreds.notGuessable = 1 # Almost impossible to guess 
-            DevOneDriveCreds.unique = 1 # completely unique
+            DevOneDriveCreds.notGuessable = 0.95 # Almost impossible to guess 
+            DevOneDriveCreds.unique = 0.95 # completely unique
             # Credentials data
             DevOneDriveEncryptedCreds = pythClasses.ns.Data()
             DevOneDriveEncryptedCreds.metaconcept = "Data"
@@ -848,8 +849,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SFTPCreds = pythClasses.ns.Credentials()
             SFTPCreds.metaconcept = "Credentials"
             SFTPCreds.name = "Encryption keys"
-            SFTPCreds.notGuessable = 1 # Almost impossible to guess 
-            SFTPCreds.unique = 1 # completely unique
+            SFTPCreds.notGuessable = 0.95 # Almost impossible to guess 
+            SFTPCreds.unique = 0.95 # completely unique
             # Credentials data
             SFTPEncryptedCreds = pythClasses.ns.Data()
             SFTPEncryptedCreds.metaconcept = "Data"
@@ -869,7 +870,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SFTPMFAPMCreds.metaconcept = "Credentials"
             SFTPMFAPMCreds.name = "passPhrase"
             SFTPMFAPMCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            SFTPMFAPMCreds.notGuessable = 1
+            SFTPMFAPMCreds.notGuessable = 0.95
             # Add identity to PM to SFTP
             plexigridPMSFTPIdentity = pythClasses.ns.Identity()
             plexigridPMSFTPIdentity.metaconcept = "Identity"
@@ -879,8 +880,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SSHCreds = pythClasses.ns.Credentials()
             SSHCreds.metaconcept = "Credentials"
             SSHCreds.name = "Encryption keys"
-            SSHCreds.notGuessable = 1 # Almost impossible to guess 
-            SSHCreds.unique = 1 # completely unique
+            SSHCreds.notGuessable = 0.95 # Almost impossible to guess 
+            SSHCreds.unique = 0.95 # completely unique
             # Credentials data
             SSHEncryptedCreds = pythClasses.ns.Data()
             SSHEncryptedCreds.metaconcept = "Data"
@@ -906,7 +907,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             MicrosoftMFADevCreds.metaconcept = "Credentials"
             MicrosoftMFADevCreds.name = "MFA"
             MicrosoftMFADevCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            MicrosoftMFADevCreds.unique = 1
+            MicrosoftMFADevCreds.unique = 0.95
             # Add credentials to the sales identity connected to onedrive
             MicrosoftSalesCreds = pythClasses.ns.Credentials()
             MicrosoftSalesCreds.metaconcept = "Credentials"
@@ -918,7 +919,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             MicrosoftMFASalesCreds.metaconcept = "Credentials"
             MicrosoftMFASalesCreds.name = "MFA"
             MicrosoftMFASalesCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            MicrosoftMFASalesCreds.unique = 1 # unique
+            MicrosoftMFASalesCreds.unique = 0.95 # unique
             # Add identity that the dev user use for Microsoft
             plexigridDevMicrosoftIdentity = pythClasses.ns.Identity()
             plexigridDevMicrosoftIdentity.metaconcept = "Identity"
@@ -1224,8 +1225,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SSHCreds = pythClasses.ns.Credentials()
             SSHCreds.metaconcept = "Credentials"
             SSHCreds.name = "Encryption keys"
-            SSHCreds.notGuessable = 1 # Almost impossible to guess 
-            SSHCreds.unique = 1 # completely unique
+            SSHCreds.notGuessable = 0.95 # Almost impossible to guess 
+            SSHCreds.unique = 0.95 # completely unique
             # Credentials data
             SSHEncryptedCreds = pythClasses.ns.Data()
             SSHEncryptedCreds.metaconcept = "Data"
@@ -1249,19 +1250,19 @@ def add_plexigrid_assets(pythClasses, honorModel):
             OneDriveMFADevCreds.metaconcept = "Credentials"
             OneDriveMFADevCreds.name = "MFA"
             OneDriveMFADevCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            OneDriveMFADevCreds.unique = 1
+            OneDriveMFADevCreds.unique = 0.9
             # Add credentials to the sales identity connected to onedrive
             OneDriveSalesCreds = pythClasses.ns.Credentials()
             OneDriveSalesCreds.metaconcept = "Credentials"
             OneDriveSalesCreds.name = "Password/Username" 
-            OneDriveSalesCreds.notGuessable = 0.6 # How hard it is to guess the password (not a part of the most common password dictionary)
+            OneDriveSalesCreds.notGuessable = 0.95 # How hard it is to guess the password (not a part of the most common password dictionary)
             OneDriveSalesCreds.unique = 0.8 # assume that the password is not used for multiple services
             # Add MFA to this identity
             OneDriveMFASalesCreds = pythClasses.ns.Credentials()
             OneDriveMFASalesCreds.metaconcept = "Credentials"
             OneDriveMFASalesCreds.name = "MFA"
-            OneDriveMFASalesCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            OneDriveMFASalesCreds.unique = 1 # unique
+            OneDriveMFASalesCreds.notPhishable = 0.95 # cannot phish the phone needed to authenticate
+            OneDriveMFASalesCreds.unique = 0.95 # unique
             # Add identity that the dev user use for OneDrive
             plexigridDevOneDriveIdentity = pythClasses.ns.Identity()
             plexigridDevOneDriveIdentity.metaconcept = "Identity"
@@ -1274,8 +1275,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             PMOneDriveCreds = pythClasses.ns.Credentials()
             PMOneDriveCreds.metaconcept = "Credentials"
             PMOneDriveCreds.name = "Encryption keys"
-            PMOneDriveCreds.notGuessable = 1 # Almost impossible to guess 
-            PMOneDriveCreds.unique = 1 # completely unique
+            PMOneDriveCreds.notGuessable = 0.95 # Almost impossible to guess 
+            PMOneDriveCreds.unique = 0.95 # completely unique
             # Add encryption keys data between OneDrive and PM
             PMOneDriveEncryptedCreds = pythClasses.ns.Data()
             PMOneDriveEncryptedCreds.metaconcept = "Data"
@@ -1288,8 +1289,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             DevOneDriveCreds = pythClasses.ns.Credentials()
             DevOneDriveCreds.metaconcept = "Credentials"
             DevOneDriveCreds.name = "Encryption keys"
-            DevOneDriveCreds.notGuessable = 1 # Almost impossible to guess 
-            DevOneDriveCreds.unique = 1 # completely unique
+            DevOneDriveCreds.notGuessable = 0.95 # Almost impossible to guess 
+            DevOneDriveCreds.unique = 0.95 # completely unique
             # Credentials data
             DevOneDriveEncryptedCreds = pythClasses.ns.Data()
             DevOneDriveEncryptedCreds.metaconcept = "Data"
@@ -1300,7 +1301,6 @@ def add_plexigrid_assets(pythClasses, honorModel):
             plexigridSalesOffice = pythClasses.ns.Application()
             plexigridSalesOffice.metaconcept = "Application"
             plexigridSalesOffice.name = "PM's Office station"
-            plexigridSalesOffice.supplyChainAuditing = 1
             # Add hardware (computer) to Sales office
             plexigridSalesHardware = pythClasses.ns.Hardware()
             plexigridSalesHardware.metaconcept = "Hardware"
@@ -1365,8 +1365,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SFTPCreds = pythClasses.ns.Credentials()
             SFTPCreds.metaconcept = "Credentials"
             SFTPCreds.name = "Encryption keys"
-            SFTPCreds.notGuessable = 1 # Almost impossible to guess 
-            SFTPCreds.unique = 1 # completely unique
+            SFTPCreds.notGuessable = 0.95 # Almost impossible to guess 
+            SFTPCreds.unique = 0.95 # completely unique
             # Credentials data
             SFTPEncryptedCreds = pythClasses.ns.Data()
             SFTPEncryptedCreds.metaconcept = "Data"
@@ -1386,7 +1386,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SFTPMFAPMCreds.metaconcept = "Credentials"
             SFTPMFAPMCreds.name = "passPhrase"
             SFTPMFAPMCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            SFTPMFAPMCreds.notGuessable = 1
+            SFTPMFAPMCreds.notGuessable = 0.95
             # Add identity to PM to SFTP
             plexigridPMSFTPIdentity = pythClasses.ns.Identity()
             plexigridPMSFTPIdentity.metaconcept = "Identity"
@@ -1591,7 +1591,6 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDevSoftwareVuln.application = [plexigridDevOffice]
             assocDevSoftwareVuln.vulnerabilities = [vulnerabilityOfficeDev]
 
-            # SFTP assets
 
             
 
@@ -1636,6 +1635,15 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDevtoDatabase = pythClasses.ns.SendData()
             assocDevtoDatabase.senderApp = [plexigridDevOffice]
             assocDevtoDatabase.sentData = [plexigridDataSSH]
+            # Transit in cloud network
+            assocSSHDataCloudTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataCloudTransit.transitNetwork = [cloudNetwork]
+            assocSSHDataCloudTransit.transitData = [plexigridDataSSH]
+            # Transit in dev network
+            assocSSHDataDevTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataDevTransit.transitNetwork = [plexiDevNetwork]
+            assocSSHDataDevTransit.transitData = [plexigridDataSSH]
+            
             # Connect app to conn
             assocConndatabase = pythClasses.ns.ApplicationConnection()
             assocConndatabase.applications = [plexigriddatabase]
@@ -1702,6 +1710,10 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocRecDevs = pythClasses.ns.ReceiveData()
             assocRecDevs.receiverApp = [plexigridDevOffice]
             assocRecDevs.receivedData = [plexigridDataDSO]
+            # receive data to dev office from sales office
+            assocRecPM = pythClasses.ns.ReceiveData()
+            assocRecPM.receiverApp = [plexigridSalesOffice]
+            assocRecPM.receivedData = [plexigridDataDSO]
             # The data is accessable from the whole sales network
             assocDataSales = pythClasses.ns.DataInTransit()
             assocDataSales.transitNetwork = [plexiSalesNetwork]
@@ -1720,22 +1732,28 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDSOSales.receivedData = [plexigridDataDSO]
             # Send data from mail server to dev
             assocSendMailServer = pythClasses.ns.SendData()
-            assocSendMailServer.senderApp = [plexigridSalesOffice]
+            assocSendMailServer.senderApp = [plexigridSalesMail]
             assocSendMailServer.sentData = [plexigridDataDSO]
 
 
-            # Connect the unencrypted data to use for local storage
-            assocLocallyUnencryptedData = pythClasses.ns.Replica()
-            assocLocallyUnencryptedData.replicatedInformation = [replicatedMeterDatatoDatabase]
-            assocLocallyUnencryptedData.dataReplicas = [plexigridDataDSO]
-            # Add locally downloaded data
-            assocLocallyDev = pythClasses.ns.DataHosting()
-            assocLocallyDev.hostedData = [plexigridDataDSO]
-            assocLocallyDev.hardware = [plexigridDevHardware]
-            # Add locally downloaded data
-            assocLocallyPM = pythClasses.ns.DataHosting()
-            assocLocallyPM.hostedData = [plexigridDataDSO]
-            assocLocallyPM.hardware = [plexigridSalesHardware]
+            if lastTestAttack == True:
+                # Add locally downloaded data
+                assocLocallyDev = pythClasses.ns.DataHosting()
+                assocLocallyDev.hostedData = [plexigridDataDSO]
+                assocLocallyDev.hardware = [plexigridDevHardware]
+                # Add locally downloaded data
+                assocLocallyPM = pythClasses.ns.DataHosting()
+                assocLocallyPM.hostedData = [plexigridDataDSO]
+                assocLocallyPM.hardware = [plexigridSalesHardware]
+            else:
+                # Add locally downloaded data on the dev office
+                assocLocallyDev = pythClasses.ns.AppContainment()
+                assocLocallyDev.containedData = [plexigridDataDSO]
+                assocLocallyDev.containingApp = [plexigridDevOffice]
+                # Add locally downloaded data on the PM office
+                assocLocallyPM = pythClasses.ns.AppContainment()
+                assocLocallyPM.containedData = [plexigridDataDSO]
+                assocLocallyPM.containingApp = [plexigridSalesOffice]
 
             # Connect office identity to dev user
             assocIdentityOfficeDevUser = pythClasses.ns.UserAssignedIdentities()
@@ -1772,6 +1790,11 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocDataSales)
             honorModel.add_association(assocDataDev)
             honorModel.add_association(assocDSOSales)
+            honorModel.add_association(assocRecPM)
+            
+            honorModel.add_association(assocSSHDataCloudTransit)
+            honorModel.add_association(assocSSHDataDevTransit)
+
             honorModel.add_association(assocSendMailServer)
             honorModel.add_association(assocConnSalesMail)
             honorModel.add_association(assocConnMailSales)
@@ -1795,6 +1818,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             
             honorModel.add_association(assocCloudInternet)
             honorModel.add_association(assocDataCloud)
+            
 
             honorModel.add_association(assocSalesSoftwareVuln)
             honorModel.add_association(assocDevSoftwareVuln)
@@ -1829,7 +1853,6 @@ def add_plexigrid_assets(pythClasses, honorModel):
 
             honorModel.add_association(assocLocallyDev)
             honorModel.add_association(assocLocallyPM)
-            honorModel.add_association(assocLocallyUnencryptedData)
             honorModel.add_association(assocCredPMOfficeIdentity)
             honorModel.add_association(assocPMOfficeIdentity)
             honorModel.add_association(assocCredDevOfficeIdentity)
@@ -1983,6 +2006,15 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDevtoDatabase = pythClasses.ns.SendData()
             assocDevtoDatabase.senderApp = [plexigridDevOffice]
             assocDevtoDatabase.sentData = [plexigridDataSSH]
+            # Transit in cloud network
+            assocSSHDataCloudTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataCloudTransit.transitNetwork = [cloudNetwork]
+            assocSSHDataCloudTransit.transitData = [plexigridDataSSH]
+            # Transit in dev network
+            assocSSHDataDevTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataDevTransit.transitNetwork = [plexiDevNetwork]
+            assocSSHDataDevTransit.transitData = [plexigridDataSSH]
+
             # Connect app to conn
             assocConndatabase = pythClasses.ns.ApplicationConnection()
             assocConndatabase.applications = [plexigriddatabase]
@@ -2085,6 +2117,10 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocSendSales = pythClasses.ns.SendData()
             assocSendSales.senderApp = [plexigridSalesOffice]
             assocSendSales.sentData = [plexigridDataPMOneDrive]
+            # Receive data from Mail server to Pm office
+            assocRecPMOffice = pythClasses.ns.ReceiveData()
+            assocRecPMOffice.receiverApp = [plexigridSalesOffice]
+            assocRecPMOffice.receivedData = [plexigridDataDSO]
             # receive data to oneDrive from sales office
             assocRecOnedrive = pythClasses.ns.ReceiveData()
             assocRecOnedrive.receiverApp = [cloudOneDrive]
@@ -2093,6 +2129,18 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocRecDevs = pythClasses.ns.ReceiveData()
             assocRecDevs.receiverApp = [plexigridDevOffice]
             assocRecDevs.receivedData = [plexigridDataDevOneDrive]
+            #  Send data from onedrive to dev
+            assocSendOneDriveDev = pythClasses.ns.SendData()
+            assocSendOneDriveDev.senderApp = [cloudOneDrive]
+            assocSendOneDriveDev.sentData = [plexigridDataDevOneDrive]
+            # Receive data from DSO to Sales
+            assocDSOSales = pythClasses.ns.ReceiveData()
+            assocDSOSales.receiverApp = [plexigridSalesMail]
+            assocDSOSales.receivedData = [plexigridDataDSO]
+            # Send data from mail server to pm office
+            assocMailServerSales = pythClasses.ns.SendData()
+            assocMailServerSales.senderApp = [plexigridSalesMail]
+            assocMailServerSales.sentData = [plexigridDataDSO]
             # The data is accessable from the whole sales network
             assocDataSales = pythClasses.ns.DataInTransit()
             assocDataSales.transitNetwork = [plexiSalesNetwork]
@@ -2105,35 +2153,33 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDataCloud = pythClasses.ns.DataInTransit()
             assocDataCloud.transitNetwork = [cloudNetwork]
             assocDataCloud.transitData = [plexigridDataPMOneDrive]
-            # Receive data from DSO to Sales
-            assocDSOSales = pythClasses.ns.ReceiveData()
-            assocDSOSales.receiverApp = [plexigridSalesMail]
-            assocDSOSales.receivedData = [plexigridDataDSO]
             # The data is accessable from the whole cloud network
             assocDataCloudDev = pythClasses.ns.DataInTransit()
             assocDataCloudDev.transitNetwork = [cloudNetwork]
             assocDataCloudDev.transitData = [plexigridDataDevOneDrive]
-            # The data is accessable from the whole Dev network
-            assocDataDevTransit = pythClasses.ns.DataInTransit()
-            assocDataDevTransit.transitNetwork = [plexiDevNetwork]
-            assocDataDevTransit.transitData = [plexigridDataDevOneDrive]
             # The data is accessable from the whole PM's network
             assocDataPMTransit = pythClasses.ns.DataInTransit()
             assocDataPMTransit.transitNetwork = [plexiSalesNetwork]
             assocDataPMTransit.transitData = [plexigridDataPMOneDrive]
 
-            # Connect the unencrypted data to use for local storage
-            assocLocallyUnencryptedData = pythClasses.ns.Replica()
-            assocLocallyUnencryptedData.replicatedInformation = [replicatedMeterDatatoDatabase]
-            assocLocallyUnencryptedData.dataReplicas = [plexigridDataDSO]
-            # Add locally downloaded data
-            assocLocallyDev = pythClasses.ns.DataHosting()
-            assocLocallyDev.hostedData = [plexigridDataDSO]
-            assocLocallyDev.hardware = [plexigridDevHardware]
-            # Add locally downloaded data
-            assocLocallyPM = pythClasses.ns.DataHosting()
-            assocLocallyPM.hostedData = [plexigridDataDSO]
-            assocLocallyPM.hardware = [plexigridSalesHardware]
+            if lastTestAttack == True:
+                # Add locally downloaded data
+                assocLocallyDev = pythClasses.ns.DataHosting()
+                assocLocallyDev.hostedData = [plexigridDataDSO]
+                assocLocallyDev.hardware = [plexigridDevHardware]
+                # Add locally downloaded data
+                assocLocallyPM = pythClasses.ns.DataHosting()
+                assocLocallyPM.hostedData = [plexigridDataDSO]
+                assocLocallyPM.hardware = [plexigridSalesHardware]
+            else:
+                # Add locally downloaded data on the dev office
+                assocLocallyDev = pythClasses.ns.AppContainment()
+                assocLocallyDev.containedData = [plexigridDataDSO]
+                assocLocallyDev.containingApp = [plexigridDevOffice]
+                # Add locally downloaded data on the PM office
+                assocLocallyPM = pythClasses.ns.AppContainment()
+                assocLocallyPM.containedData = [plexigridDataDSO]
+                assocLocallyPM.containingApp = [plexigridSalesOffice]
 
             # Connect office identity to dev user
             assocIdentityOfficeDevUser = pythClasses.ns.UserAssignedIdentities()
@@ -2170,6 +2216,13 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocDataSales)
             honorModel.add_association(assocDataDev)
             honorModel.add_association(assocDSOSales)
+
+            honorModel.add_association(assocSSHDataCloudTransit)
+            honorModel.add_association(assocSSHDataDevTransit)
+
+            honorModel.add_association(assocMailServerSales)
+            honorModel.add_association(assocRecPMOffice)
+            honorModel.add_association(assocSendOneDriveDev)
             honorModel.add_association(assocConnSalesMail)
             honorModel.add_association(assocConnMailSales)
             honorModel.add_association(assocIdentityMail)
@@ -2239,12 +2292,10 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocCredOneDrive2)
             honorModel.add_association(assocreplicatedDataDevOneDrive)
             honorModel.add_association(assocDataCloudDev)
-            honorModel.add_association(assocDataDevTransit)
             honorModel.add_association(assocDataPMTransit)
 
             honorModel.add_association(assocLocallyDev)
             honorModel.add_association(assocLocallyPM)
-            honorModel.add_association(assocLocallyUnencryptedData)
             honorModel.add_association(assocCredPMOfficeIdentity)
             honorModel.add_association(assocPMOfficeIdentity)
             honorModel.add_association(assocCredDevOfficeIdentity)
@@ -2387,6 +2438,15 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDevtoDatabase = pythClasses.ns.SendData()
             assocDevtoDatabase.senderApp = [plexigridDevOffice]
             assocDevtoDatabase.sentData = [plexigridDataSSH]
+            # Transit in cloud network
+            assocSSHDataCloudTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataCloudTransit.transitNetwork = [cloudNetwork]
+            assocSSHDataCloudTransit.transitData = [plexigridDataSSH]
+            # Transit in dev network
+            assocSSHDataDevTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataDevTransit.transitNetwork = [plexiDevNetwork]
+            assocSSHDataDevTransit.transitData = [plexigridDataSSH]
+
             # Connect app to conn
             assocConndatabase = pythClasses.ns.ApplicationConnection()
             assocConndatabase.applications = [plexigriddatabase]
@@ -2464,6 +2524,10 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocRecSFTPPM = pythClasses.ns.ReceiveData()
             assocRecSFTPPM.receiverApp = [plexigridSalesOffice]
             assocRecSFTPPM.receivedData = [plexigridDataSFTP]
+            # The data is accessable from the whole sales network
+            assocSFTPTransitPM = pythClasses.ns.DataInTransit()
+            assocSFTPTransitPM.transitNetwork = [plexiSalesNetwork]
+            assocSFTPTransitPM.transitData = [plexigridDataSFTP]
 
             
 
@@ -2499,18 +2563,24 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocSendMailServer.sentData = [plexigridDataDSO]
 
 
-            # Connect the unencrypted data to use for local storage
-            assocLocallyUnencryptedData = pythClasses.ns.Replica()
-            assocLocallyUnencryptedData.replicatedInformation = [replicatedMeterDatatoDatabase]
-            assocLocallyUnencryptedData.dataReplicas = [plexigridDataDSO]
-            # Add locally downloaded data
-            assocLocallyDev = pythClasses.ns.DataHosting()
-            assocLocallyDev.hostedData = [plexigridDataDSO]
-            assocLocallyDev.hardware = [plexigridDevHardware]
-            # Add locally downloaded data
-            assocLocallyPM = pythClasses.ns.DataHosting()
-            assocLocallyPM.hostedData = [plexigridDataDSO]
-            assocLocallyPM.hardware = [plexigridSalesHardware]
+            if lastTestAttack == True:
+                # Add locally downloaded data
+                assocLocallyDev = pythClasses.ns.DataHosting()
+                assocLocallyDev.hostedData = [plexigridDataDSO]
+                assocLocallyDev.hardware = [plexigridDevHardware]
+                # Add locally downloaded data
+                assocLocallyPM = pythClasses.ns.DataHosting()
+                assocLocallyPM.hostedData = [plexigridDataDSO]
+                assocLocallyPM.hardware = [plexigridSalesHardware]
+            else:
+                # Add locally downloaded data on the dev office
+                assocLocallyDev = pythClasses.ns.AppContainment()
+                assocLocallyDev.containedData = [plexigridDataDSO]
+                assocLocallyDev.containingApp = [plexigridDevOffice]
+                # Add locally downloaded data on the PM office
+                assocLocallyPM = pythClasses.ns.AppContainment()
+                assocLocallyPM.containedData = [plexigridDataDSO]
+                assocLocallyPM.containingApp = [plexigridSalesOffice]
 
             # Connect office identity to dev user
             assocIdentityOfficeDevUser = pythClasses.ns.UserAssignedIdentities()
@@ -2547,6 +2617,11 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocDataSales)
             honorModel.add_association(assocDataDev)
             honorModel.add_association(assocDSOSales)
+
+            honorModel.add_association(assocSSHDataCloudTransit)
+            honorModel.add_association(assocSSHDataDevTransit)
+
+            honorModel.add_association(assocSFTPTransitPM)
             honorModel.add_association(assocSendMailServer)
             honorModel.add_association(assocConnSalesMail)
             honorModel.add_association(assocConnMailSales)
@@ -2604,7 +2679,6 @@ def add_plexigrid_assets(pythClasses, honorModel):
 
             honorModel.add_association(assocLocallyDev)
             honorModel.add_association(assocLocallyPM)
-            honorModel.add_association(assocLocallyUnencryptedData)
             honorModel.add_association(assocCredPMOfficeIdentity)
             honorModel.add_association(assocPMOfficeIdentity)
             honorModel.add_association(assocCredDevOfficeIdentity)
@@ -2754,6 +2828,15 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDevtoDatabase = pythClasses.ns.SendData()
             assocDevtoDatabase.senderApp = [plexigridDevOffice]
             assocDevtoDatabase.sentData = [plexigridDataSSH]
+            # Transit in cloud network
+            assocSSHDataCloudTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataCloudTransit.transitNetwork = [cloudNetwork]
+            assocSSHDataCloudTransit.transitData = [plexigridDataSSH]
+            # Transit in dev network
+            assocSSHDataDevTransit = pythClasses.ns.DataInTransit()
+            assocSSHDataDevTransit.transitNetwork = [plexiDevNetwork]
+            assocSSHDataDevTransit.transitData = [plexigridDataSSH]
+
             # Connect app to conn
             assocConndatabase = pythClasses.ns.ApplicationConnection()
             assocConndatabase.applications = [plexigriddatabase]
@@ -2897,19 +2980,32 @@ def add_plexigrid_assets(pythClasses, honorModel):
 
             
             
-
-            # Connect the unencrypted data to use for local storage
-            assocLocallyUnencryptedData = pythClasses.ns.Replica()
-            assocLocallyUnencryptedData.replicatedInformation = [replicatedMeterDatatoDatabase]
-            assocLocallyUnencryptedData.dataReplicas = [unencryptedData]
-            # Add locally downloaded data
-            assocLocallyDev = pythClasses.ns.DataHosting()
-            assocLocallyDev.hostedData = [unencryptedData]
-            assocLocallyDev.hardware = [plexigridDevHardware]
-            # Add locally downloaded data
-            assocLocallyPM = pythClasses.ns.DataHosting()
-            assocLocallyPM.hostedData = [unencryptedData]
-            assocLocallyPM.hardware = [plexigridSalesHardware]
+            if lastTestAttack == True:
+                # Connect the unencrypted data to use for local storage
+                assocLocallyUnencryptedData = pythClasses.ns.Replica()
+                assocLocallyUnencryptedData.replicatedInformation = [replicatedMeterDatatoDatabase]
+                assocLocallyUnencryptedData.dataReplicas = [unencryptedData]
+                # Add locally downloaded data
+                assocLocallyDev = pythClasses.ns.DataHosting()
+                assocLocallyDev.hostedData = [unencryptedData]
+                assocLocallyDev.hardware = [plexigridDevHardware]
+                # Add locally downloaded data
+                assocLocallyPM = pythClasses.ns.DataHosting()
+                assocLocallyPM.hostedData = [unencryptedData]
+                assocLocallyPM.hardware = [plexigridSalesHardware]
+            else:
+                # Connect the unencrypted data to use for local storage
+                assocLocallyUnencryptedData = pythClasses.ns.Replica()
+                assocLocallyUnencryptedData.replicatedInformation = [replicatedMeterDatatoDatabase]
+                assocLocallyUnencryptedData.dataReplicas = [unencryptedData]
+                # Add locally downloaded data on the dev office
+                assocLocallyDev = pythClasses.ns.AppContainment()
+                assocLocallyDev.containedData = [unencryptedData]
+                assocLocallyDev.containingApp = [plexigridDevOffice]
+                # Add locally downloaded data on the PM office
+                assocLocallyPM = pythClasses.ns.AppContainment()
+                assocLocallyPM.containedData = [unencryptedData]
+                assocLocallyPM.containingApp = [plexigridSalesOffice]
 
             # Connect office identity to dev user
             assocIdentityOfficeDevUser = pythClasses.ns.UserAssignedIdentities()
@@ -2971,6 +3067,8 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocSendOneDrive)
             honorModel.add_association(assocRecOnedrive)
             honorModel.add_association(assocOneDriveDataSales)
+            honorModel.add_association(assocSSHDataCloudTransit)
+            honorModel.add_association(assocSSHDataDevTransit)
             
             honorModel.add_association(assocConnSalesMail)
             honorModel.add_association(assocConnMailSales)
@@ -3064,6 +3162,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
 ################################################## Test 6 ########################################################################       
         if test_case6:
             pass
+    
     if addToHonorModel:
 ################################################## Test 1 ########################################################################
         if test_case1:
@@ -3143,9 +3242,9 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocSendDSO.senderApp = [DSO_office]
             assocSendDSO.sentData = [plexigridDataDSO]
             # Data will be in transit through the internet
-            assocDataInternet2= pythClasses.ns.DataInTransit()
-            assocDataInternet2.transitNetwork = [internet]
-            assocDataInternet2.transitData = [plexigridDataPM]
+            #assocDataInternet2= pythClasses.ns.DataInTransit()
+            #assocDataInternet2.transitNetwork = [internet]
+            #assocDataInternet2.transitData = [plexigridDataPM]
             # Add credData to SFTP
             assocCredSDSO = pythClasses.ns.AppContainment()
             assocCredSDSO.containedData = [DSOEncryptedCreds]
@@ -3153,7 +3252,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             # Add every association to the model
             honorModel.add_association(assocSalesDSO)
             honorModel.add_association(assocDataInternet)
-            honorModel.add_association(assocDataInternet2)
+           # honorModel.add_association(assocDataInternet2)
             honorModel.add_association(assocSendDSO)
             honorModel.add_association(assocCredSDSO)
             honorModel.add_association(assocDevDSO)
@@ -3183,9 +3282,9 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocSendDSO.senderApp = [DSO_office]
             assocSendDSO.sentData = [plexigridDataDSO]
             # Data will be in transit through the internet
-            assocDataInternet2= pythClasses.ns.DataInTransit()
-            assocDataInternet2.transitNetwork = [internet]
-            assocDataInternet2.transitData = [plexigridDataPM]
+            #assocDataInternet2= pythClasses.ns.DataInTransit()
+            #assocDataInternet2.transitNetwork = [internet]
+            #assocDataInternet2.transitData = [plexigridDataPM]
             # Add credData to SFTP
             assocCredSDSO = pythClasses.ns.AppContainment()
             assocCredSDSO.containedData = [DSOEncryptedCreds]
@@ -3194,7 +3293,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             # Add every association to the model
             honorModel.add_association(assocSalesDSO)
             honorModel.add_association(assocDataInternet)
-            honorModel.add_association(assocDataInternet2)
+            #honorModel.add_association(assocDataInternet2)
             honorModel.add_association(assocSendDSO)
             honorModel.add_association(assocCredSDSO)
             honorModel.add_association(assocInternetCloud)
@@ -3418,11 +3517,21 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDataDMZTransit= pythClasses.ns.DataInTransit()
             assocDataDMZTransit.transitNetwork = [DMZNetwork]
             assocDataDMZTransit.transitData = [plexigridDataDSO]
+            # SSH data in transit through the internet
+            assocSSHDataInternetTransit= pythClasses.ns.DataInTransit()
+            assocSSHDataInternetTransit.transitNetwork = [internet]
+            assocSSHDataInternetTransit.transitData = [plexigridDataSSH]
             
-            # Add locally downloaded data
-            assocLocallyDSO = pythClasses.ns.DataHosting()
-            assocLocallyDSO.hostedData = [plexigridDataDSO]
-            assocLocallyDSO.hardware = [DSOOfficeHardware]
+            if lastTestAttack == True:
+                # Add locally downloaded data
+                assocLocallyDSO = pythClasses.ns.DataHosting()
+                assocLocallyDSO.hostedData = [plexigridDataDSO]
+                assocLocallyDSO.hardware = [DSOOfficeHardware]
+            else:
+                # Add data locally on application
+                assocLocallyDSO = pythClasses.ns.AppContainment()
+                assocLocallyDSO.containedData = [plexigridDataDSO]
+                assocLocallyDSO.containingApp = [DSOOfficeStation]
 
 
             # Add to model
@@ -3472,6 +3581,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocDataDSOfficeTransit)
             honorModel.add_association(assocSendDMZMail)
             honorModel.add_association(assocDataInternet)
+            honorModel.add_association(assocSSHDataInternetTransit)
 
            
             honorModel.add_association(assocLocallyDSO)
@@ -3678,7 +3788,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             
 
             # data exchanges
-            # Data goes is sent from DSO office station
+            # Data is sent from DSO office station
             assocSendDSO = pythClasses.ns.SendData()
             assocSendDSO.senderApp = [DSOOfficeStation]
             assocSendDSO.sentData = [plexigridDataDSO]
@@ -3702,19 +3812,25 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDataInternetDevTransit = pythClasses.ns.DataInTransit()
             assocDataInternetDevTransit.transitNetwork = [internet]
             assocDataInternetDevTransit.transitData = [plexigridDataDevOneDrive]
-            # The data is accessable from the whole PM's network
-            assocDataPMTransit = pythClasses.ns.DataInTransit()
-            assocDataPMTransit.transitNetwork = [plexiSalesNetwork]
-            assocDataPMTransit.transitData = [plexigridDataPMOneDrive]
             # The data is accessable from the internet
             assocDataInternetPMTransit = pythClasses.ns.DataInTransit()
             assocDataInternetPMTransit.transitNetwork = [internet]
             assocDataInternetPMTransit.transitData = [plexigridDataPMOneDrive]
+            # SSH data in transit through the internet
+            assocSSHDataInternetTransit= pythClasses.ns.DataInTransit()
+            assocSSHDataInternetTransit.transitNetwork = [internet]
+            assocSSHDataInternetTransit.transitData = [plexigridDataSSH]
             
-            # Add locally downloaded data
-            assocLocallyDSO = pythClasses.ns.DataHosting()
-            assocLocallyDSO.hostedData = [plexigridDataDSO]
-            assocLocallyDSO.hardware = [DSOOfficeHardware]
+            if lastTestAttack == True:
+                # Add locally downloaded data
+                assocLocallyDSO = pythClasses.ns.DataHosting()
+                assocLocallyDSO.hostedData = [plexigridDataDSO]
+                assocLocallyDSO.hardware = [DSOOfficeHardware]
+            else:
+                # Add data locally on application
+                assocLocallyDSO = pythClasses.ns.AppContainment()
+                assocLocallyDSO.containedData = [plexigridDataDSO]
+                assocLocallyDSO.containingApp = [DSOOfficeStation]
 
 
             # Add to model
@@ -3768,6 +3884,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocDataInternetDevTransit)
             honorModel.add_association(assocDataInternetPMTransit)
             honorModel.add_association(assocLocallyDSO)
+            honorModel.add_association(assocSSHDataInternetTransit)
 
             honorModel.add_association(assocDSOCredIdentity)
             
@@ -4003,7 +4120,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SFTPMFADSOCreds.metaconcept = "Credentials"
             SFTPMFADSOCreds.name = "passPhrase"
             SFTPMFADSOCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            SFTPMFADSOCreds.notGuessable = 1
+            SFTPMFADSOCreds.notGuessable = 0.95
 
             # SFTP associations
              # Connect Pm to SFTP
@@ -4035,9 +4152,9 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocEncSFTPData.encryptCreds = [SFTPCreds]
             assocEncSFTPData.encryptedData = [plexigridDataSFTP]
             # Add credentials data to credentials
-            assocCredSSHData = pythClasses.ns.InfoContainment()
-            assocCredSSHData.containerData = [SFTPEncryptedCreds]
-            assocCredSSHData.information = [SFTPCreds]
+            assocCredSFTPData = pythClasses.ns.InfoContainment()
+            assocCredSFTPData.containerData = [SFTPEncryptedCreds]
+            assocCredSFTPData.information = [SFTPCreds]
             # Connect to information replica
             assocreplicatedSFTPData = pythClasses.ns.Replica()
             assocreplicatedSFTPData.replicatedInformation = [replicatedMeterDatatoDatabase]
@@ -4066,6 +4183,10 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocSFTPRecFromDSO = pythClasses.ns.ReceiveData()
             assocSFTPRecFromDSO.receiverApp = [DSOSFTPServer]
             assocSFTPRecFromDSO.receivedData = [plexigridDataSFTP]
+            # SSH data in transit through the internet
+            assocSSHDataInternetTransit= pythClasses.ns.DataInTransit()
+            assocSSHDataInternetTransit.transitNetwork = [internet]
+            assocSSHDataInternetTransit.transitData = [plexigridDataSSH]
 
 
             # Conn between database and Internet
@@ -4087,11 +4208,21 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDataDMZTransit= pythClasses.ns.DataInTransit()
             assocDataDMZTransit.transitNetwork = [DMZNetwork]
             assocDataDMZTransit.transitData = [plexigridDataSFTP]
+            # Data goes is sent from DSO office station
+            assocSendDSO = pythClasses.ns.SendData()
+            assocSendDSO.senderApp = [DSOOfficeStation]
+            assocSendDSO.sentData = [plexigridDataSFTP]
             
-            # Add locally downloaded data
-            assocLocallyDSO = pythClasses.ns.DataHosting()
-            assocLocallyDSO.hostedData = [plexigridDataDSO]
-            assocLocallyDSO.hardware = [DSOOfficeHardware]
+            if lastTestAttack == True:
+                # Add locally downloaded data
+                assocLocallyDSO = pythClasses.ns.DataHosting()
+                assocLocallyDSO.hostedData = [plexigridDataDSO]
+                assocLocallyDSO.hardware = [DSOOfficeHardware]
+            else:
+                # Add data locally on application
+                assocLocallyDSO = pythClasses.ns.AppContainment()
+                assocLocallyDSO.containedData = [plexigridDataDSO]
+                assocLocallyDSO.containingApp = [DSOOfficeStation]
 
 
             # Add to model
@@ -4147,6 +4278,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocDataDMZTransit)
             honorModel.add_association(assocDataDSOfficeTransit)
             honorModel.add_association(assocDataInternet)
+            honorModel.add_association(assocSendDSO)
 
            
             honorModel.add_association(assocLocallyDSO)
@@ -4159,7 +4291,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocSFTPCredDSOoffice)
             honorModel.add_association(assocSFTPSentDSO)
             honorModel.add_association(assocEncSFTPData)
-            honorModel.add_association(assocCredSSHData)
+            honorModel.add_association(assocCredSFTPData)
             honorModel.add_association(assocreplicatedSFTPData)
             honorModel.add_association(assocConnSFTPDmz)
             honorModel.add_association(assocConnDmzSFTP)
@@ -4167,6 +4299,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocSFTPHighPrivDSOOffice)
             honorModel.add_association(assocSFTPSentToPM)
             honorModel.add_association(assocSFTPRecFromDSO)
+            honorModel.add_association(assocSSHDataInternetTransit)
 
             honorModel.add_association(assocDSOCredIdentity)
 
@@ -4384,6 +4517,22 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocDataInternetPMTransit = pythClasses.ns.DataInTransit()
             assocDataInternetPMTransit.transitNetwork = [internet]
             assocDataInternetPMTransit.transitData = [plexigridDataPMOneDrive]
+            # Data is in transit through internet
+            assocDataInternet= pythClasses.ns.DataInTransit()
+            assocDataInternet.transitNetwork = [internet]
+            assocDataInternet.transitData = [plexigridDataSFTP]
+            # Data is in transit through DSO office zone
+            assocDataDSOfficeTransit= pythClasses.ns.DataInTransit()
+            assocDataDSOfficeTransit.transitNetwork = [DSOOfficeNetwork]
+            assocDataDSOfficeTransit.transitData = [plexigridDataSFTP]
+            # Data is in transit through Public DMZ
+            assocDataDMZTransit= pythClasses.ns.DataInTransit()
+            assocDataDMZTransit.transitNetwork = [DMZNetwork]
+            assocDataDMZTransit.transitData = [plexigridDataSFTP]
+            # SSH data in transit through the internet
+            assocSSHDataInternetTransit= pythClasses.ns.DataInTransit()
+            assocSSHDataInternetTransit.transitNetwork = [internet]
+            assocSSHDataInternetTransit.transitData = [plexigridDataSSH]
 
             # SFTP Assets
             # Add PM identity to SFTP
@@ -4416,7 +4565,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             SFTPMFADSOCreds.metaconcept = "Credentials"
             SFTPMFADSOCreds.name = "passPhrase"
             SFTPMFADSOCreds.notPhishable = 1 # cannot phish the phone needed to authenticate
-            SFTPMFADSOCreds.notGuessable = 1
+            SFTPMFADSOCreds.notGuessable = 0.95
 
             # SFTP associations
              # Connect Pm to SFTP
@@ -4448,9 +4597,9 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocEncSFTPData.encryptCreds = [SFTPCreds]
             assocEncSFTPData.encryptedData = [plexigridDataSFTP]
             # Add credentials data to credentials
-            assocCredSSHData = pythClasses.ns.InfoContainment()
-            assocCredSSHData.containerData = [SFTPEncryptedCreds]
-            assocCredSSHData.information = [SFTPCreds]
+            assocCredSFTPData = pythClasses.ns.InfoContainment()
+            assocCredSFTPData.containerData = [SFTPEncryptedCreds]
+            assocCredSFTPData.information = [SFTPCreds]
             # Connect to information replica
             assocreplicatedSFTPData = pythClasses.ns.Replica()
             assocreplicatedSFTPData.replicatedInformation = [replicatedMeterDatatoDatabase]
@@ -4480,10 +4629,16 @@ def add_plexigrid_assets(pythClasses, honorModel):
             assocSFTPRecFromDSO.receiverApp = [DSOSFTPServer]
             assocSFTPRecFromDSO.receivedData = [plexigridDataSFTP]
             
-            # Add locally downloaded data
-            assocLocallyDSO = pythClasses.ns.DataHosting()
-            assocLocallyDSO.hostedData = [unencryptedData]
-            assocLocallyDSO.hardware = [DSOOfficeHardware]
+            if lastTestAttack == True:
+                # Add locally downloaded data
+                assocLocallyDSO = pythClasses.ns.DataHosting()
+                assocLocallyDSO.hostedData = [unencryptedData]
+                assocLocallyDSO.hardware = [DSOOfficeHardware]
+            else:
+                # Add data locally on application
+                assocLocallyDSO = pythClasses.ns.AppContainment()
+                assocLocallyDSO.containedData = [unencryptedData]
+                assocLocallyDSO.containingApp = [DSOOfficeStation]
 
 
             # Add to model
@@ -4534,7 +4689,11 @@ def add_plexigrid_assets(pythClasses, honorModel):
 
             honorModel.add_association(assocDataInternetDevTransit)
             honorModel.add_association(assocDataInternetPMTransit)
+            honorModel.add_association(assocDataInternet)
+            honorModel.add_association(assocDataDSOfficeTransit)
+            honorModel.add_association(assocDataDMZTransit)
             honorModel.add_association(assocLocallyDSO)
+            honorModel.add_association(assocSSHDataInternetTransit)
 
             # SFTP assets
             honorModel.add_asset(DSOSFTPIdentity)
@@ -4552,7 +4711,7 @@ def add_plexigrid_assets(pythClasses, honorModel):
             honorModel.add_association(assocSFTPCredDSOoffice)
             honorModel.add_association(assocSFTPSentDSO)
             honorModel.add_association(assocEncSFTPData)
-            honorModel.add_association(assocCredSSHData)
+            honorModel.add_association(assocCredSFTPData)
             honorModel.add_association(assocreplicatedSFTPData)
             honorModel.add_association(assocConnSFTPDmz)
             honorModel.add_association(assocConnDmzSFTP)
