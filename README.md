@@ -1,5 +1,9 @@
 ## CyberPlex
-Using MAL to evaluate the cyber security impact when adding third party user into a DSO's communication network.
-
-## Contributer with the MAL-toolbox
+Cyber Security Assessment of
+Distribution System Operators
+using the Meta attack Language
+## Contributor with the MAL-toolbox
 Andrei Buhaiu
+
+## Contributor with the MAL-traverser
+Beata Johansson
